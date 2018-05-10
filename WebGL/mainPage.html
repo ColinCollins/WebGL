@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>WebGL TEST</title>
+        <script src = 'script.js' type = "text/javascript"></script>
+        <script src = 'minMatrx.js' type = "text/javascript"></script>
+        <!-- attribute 存储不同顶点不同信息
+            uniform 存储相同顶点的不同信息, 4维的变换矩阵
+            这一点和 OpenGL 十分的不同
+        -->
+        <script id = 'vs' type = "x-shader/x-vertex">
+            attribute vec3 position;    
+            uniform mat4 mvpMatrix;
+
+            void main () {
+                gl_Position = mvpMatrix * vec4(position, 1.0);
+            }
+        </script>
+        <script id = 'fs' type = 'x-shader/x-fragment'>
+            void mian() {
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            }
+        </script>
+    </head>
+</html>

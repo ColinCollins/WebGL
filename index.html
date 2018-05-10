@@ -1,0 +1,51 @@
+<html>
+<head>
+    <title>asd</title>
+</head>
+<link rel="stylesheet" href="test.css">
+<body>
+    
+<canvas id = 'c' style = "width :400px ; height: 300px"></canvas>
+<H2 id = "test">sdfsdfs</H2>
+</body>
+<script id = "2d-vertex-shader" type = "notjs">
+
+    attribute vec4 a_position;
+
+    void main(){
+        gl_Position = a_position;
+    }
+</script>
+<script id = "2d-fragment-shader" type = "notjs">
+
+    precision mediump float;
+
+    void main(){
+        gl_FragColor = vec4(1,0,0.5,1); //return purple
+    }
+</script>
+<script type = "text/javascript">
+    var test = true;
+    var test2 = !!test;
+    var test3 = 3;
+    test2 = !!test3;
+    console.log(test);
+    console.log(test2);
+
+    var arrays = {};
+    arrays['test1'] = test2;
+    arrays['test2'] = test3;
+
+    if ('test1' in arrays) {
+       console.log("arrays test:"+arrays['test1']); 
+    } else if('test3' in arrays) {
+        console.log('sb');
+    }
+
+    
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-helper.js"></script>
+<script type = "text/javascript" src = "GLSL.js"></script>
+
+</html>
