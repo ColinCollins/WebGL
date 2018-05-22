@@ -27,7 +27,6 @@ function createProgram(gl, vertexShader, fragmentShader){
 
 function main(){
 
-    
     console.log("get execute");
 
     var canvas = document.getElementById("c");
@@ -78,6 +77,9 @@ var normalize = false;
 var stride = 0;
 var offset = 0;
 gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset);
+//size 坐标（也可以是参数参数个数）， 数据类型， 当被访问时，normalize 固定点数据值是否应该被归一化或者直接转换成固定点
+//stride 步长间隔
+// offset 第一个值的偏移量。
 
 //draw
 var primitiveType = gl.TRIANGLES;
@@ -85,5 +87,10 @@ var offset = 0;
 var count = 3;
 gl.drawArrays(primitiveType, offset, count);
 }
-
+/* var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');  
+      
+// 向uniformLocation中传入坐标变换矩阵  
+gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);   
+    相同点-》实际就是数据顶点 mvpMatrix 仿射矩阵变换过后， unifomMatrix4 进行坐标点的变化。
+*/
 main();
