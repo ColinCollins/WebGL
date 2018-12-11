@@ -1,0 +1,16 @@
+{
+  "name": "webgl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "create": "gulp --fold"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "fs-extra": "^7.0.1"
+  }
+}
