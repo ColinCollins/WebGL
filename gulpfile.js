@@ -7,6 +7,7 @@ const utils = require('./Tool/utils');
 
 program
     .option('-f, --fold <names>', 'Create a new Chapter fold')
+    .option('-b, --brunch <name>', 'Using the browserify build a js file')
     .parse(process.argv);
 
 gulp.task('default', function () {
@@ -35,3 +36,5 @@ gulp.task('default', function () {
         utils.error(err);
     });
 });
+// brwoserify
+gulp.task();
