@@ -12,29 +12,32 @@ program
 
 gulp.task('default', function () {
     var foldName = program.fold;
+    let dist = `./${foldName}`
     if (!foldName) {
         utils.error('Can\'t find fold name.');
         return;
     }
-    if (fs.existsSync(`./${foldName}`)) {
+    if (fs.existsSync(dist)) {
         utils.warn('fold already exists');
         return;
     }
     else {
-        fs.mkdirSync(`./${foldName}`);
+        fs.mkdirSync(dist);
     }
 
-    let result = fs.readFileSync('./build-templete/templete.html', 'utf8');
+    let path = './build-templete/templete';
+    let result = fs.readFileSync(path + '.html', 'utf8');
     result = result.replace(/{foldName}/g, foldName);
-
-    fse.outputFileSync(`./${foldName}/${foldName}.html`, result);
-    fse.copy('./build-templete/lib', `./${foldName}/lib`)
+    fse.outputFileSync(dist + `/${foldName}.html`, result);
+    fse.copy('./build-templete/lib', dist + `/lib`)
     .then(() => {
-        fse.writeFileSync(`./${foldName}/${foldName}.js`, '');
+        utils.pass('Copy lib finished.');
     }).
     catch((err) => {
         utils.error(err);
     });
+    let jsRes = fs.readFileSync(path + '.js', 'utf8');
+    fse.outputFileSync(dist + `/${foldName}.js`, jsRes);
 });
 // brwoserify
 //gulp.task();
