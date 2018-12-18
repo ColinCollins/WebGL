@@ -13,7 +13,7 @@ const FSHADER_SOURCE =
 
 function main() {
     let canvas = document.getElementById('webgl');
-    let gl = getWebglContext(canvas);
+    let gl = getWebGLContext(canvas);
     if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
         console.error('init shader failed.');
         return;
