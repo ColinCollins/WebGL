@@ -46,7 +46,7 @@ function main () {
     canvas.onmousedown = () => {
         gl.clear(gl.COLOR_BUFFER_BIT);
         // 这里相当于改了 anchor， 如果要改 position 还是要调整 matrix
-        gl.uniform4f(u_Translation, transPoints[0], transPoints[1], transPoints[2], 0);
+        //gl.uniform4f(u_Translation, transPoints[0], transPoints[1], transPoints[2], 0);
         //gl.uniformMatrix4fv(u_xformMatrix, false, initMatrix(1, 0, transPoints[0], transPoints[1]));
         tx = ty = 0.5;
         gl.uniform4f(u_FragColor, Math.random().toFixed(2), Math.random().toFixed(2), Math.random().toFixed(2), 1.0);
