@@ -1,0 +1,28 @@
+1. 现在我们有三个矩阵了：
+ProjMatrix 投影矩阵 -> orthoMatrix, perspective Matrix 换句话说 正交投影和透视投影
+ViewMatrix 视图矩阵 setLookAt 设置视图，即当前主角（摄像机）的视线方向。
+ModelMatrix 模型矩阵 即仿射变换的实现对象
+另外一个基本顶点矩阵
+Position_Matrix
+
+相乘规则是：
+投影 * 视图 * 模型 * 顶点
+
+难以解析的部分是视图矩阵，目前是用于确定实现方向，视线可视范围大小倒是由 __投影矩阵__ 设定的。
+View 的实际作用似乎就是 canvas 视图窗口那么大点显示区域，但是显示不全的原因是什么？ Scene 的关系倒和 View 似乎没有那么大了。
+2D 引擎里面似乎可以用不到 perspective ,但是正交投影还是需要的，用于确定层级关系。
+
+
+2. 下一节的疑问点：
+深度缓冲区的实际作用是什么？
+缓存了什么数据？
+
+Color 缓存了上一次绘制的颜色以及顶点数据，清除之后上一帧的内容就消失了，但是 深度缓存，缓存了什么内容？
+- opengl 中，深度缓存可是设置通过片段数据， gl.LESS 小于当前存储片段数据就可以通过，从而绘制。还有其他，不确定 webgl 可不可以。
+
+- 从: <br>
+ ![depthTest](../depthBuffer/depthTest.png) <br>
+ 看出 数据移动为 -0.5 清理为：gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT
+ 清除原本绘制的 Color 对象之后从存储数据可以看出，最小值被保留缓存中，为通过最小值的对象均没有被绘制？
+ 那么判断的数值是什么？z-index 移动之后 __后方的小三角形__ 数据在三角形中间，所以表示未通过最小是缓存数值，所以没有被显示出来。对比：<br>
+ ![undepthTest](../depthBuffer/unDepthTest.png)
