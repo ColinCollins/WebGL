@@ -61,8 +61,10 @@ function main() {
 
 function initVertices () {
     // return the vertex and uv(st) coordiate vertex
+    // 顶点坐标用于确定 texture 在 webgl 坐标轴上位置
+    // 纹理坐标用于确定最终在 texture 上渲染的纹理数据坐标位置, 截取的 image 的数据，取值可以 大于 1 产生的是缩小的效果
     return new Float32Array([
-        -0.5, 0.5, 0.0, 1.0,
+        -0.5, 0.5, 0.0, 2.0,
         -0.5, -0.5, 0.0, 0.0,
         0.5, 0.5, 1.0, 1.0,
         0.5, -0.5, 1.0 , 0.0
