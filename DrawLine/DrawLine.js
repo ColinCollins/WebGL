@@ -2,14 +2,14 @@ const VSHADER_SOURCE =
                         "attribute vec4 a_Position; \n" +
                         "void main() { \n" +
                         "gl_Position = a_Position; \n" +
-                        "gl_PointSize = 10;\n" +
+                        "gl_PointSize = 10.0;\n" +
                         "}\n";
 
 const FSHADER_SOURCE =
                         "precision mediump float; \n" +
                         "uniform vec4 u_FragColor;\n" +
                         "void main () { \n" +
-                        "gl_FragColor = u_FragColor;" +
+                        "gl_FragColor = u_FragColor;\n" +
                         "}\n";
 const PXRATIO = 10;
 
@@ -31,11 +31,15 @@ function main () {
 function init() {
     canvas = document.getElementById('webgl');
     gl = getWebGLContext(canvas);
+    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+        console.error('init shader failed.');
+        return;
+    }
 }
 
 function getAttribPosition () {
     if (!gl) return;
-    let a_Position = gl.getAttribLocation(gl.program, 'a_Positions');
+    let a_Position = gl.getAttribLocation(gl.program, 'a_Position');
     if (a_Position < 0) {
         console.error('Failed get the a_Position.');
         return null;
@@ -82,13 +86,13 @@ function recLinePoints (handle, a_Position, u_FragColor) {
         gl.bufferData(gl.ARRAY_BUFFER, lines, gl.STATIC_DRAW);
         // normalize, stride, offset
         gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-        gl.enableVexterAttribArray(a_Position);
+        gl.enableVertexAttribArray(a_Position);
         // clear the canvas COlOR_BUFFER_BIT
         gl.clear(gl.COLOR_BUFFER_BIT);
         // draw the line.
-        gl.drawArrays(gl.POINTS, 0, line.length);
+        gl.drawArrays(gl.POINTS, 0, lines.length);
         // destroy the area.
-        endDraw();
+        endDraw(a_Position);
     }
 }
 
@@ -135,7 +139,7 @@ function trans2WebGLCoordinate (handle) {
     return {x: x, y: y};
 }
 
-function endDraw () {
+function endDraw (a_Position) {
     gl.disableVexterAttribArray(a_Position);
     // destroy the array
     linePoints.length = 0;
