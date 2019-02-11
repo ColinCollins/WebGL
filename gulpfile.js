@@ -5,6 +5,7 @@ const program = require('commander');
 const utils = require('./Tool/utils');
 const globby = require('globby');
 const { parse } = require('path');
+const  child_process = require('child_process');
 const del = require('del');
 
 const browserify = require('browserify');
@@ -46,7 +47,7 @@ gulp.task('default', function (done) {
         let name = parser.name;
         if (name === 'templete') {
             let jsRes = fs.readFileSync(file, 'utf8');
-            fse.outputFileSync(dist + `/${foldName}.js`, jsRes);
+            fse.outputFileSync(dist + `/index.js`, jsRes);
         }
         else {
             let desPath = dist + '/' + name + ext;
@@ -56,7 +57,7 @@ gulp.task('default', function (done) {
     });
 
     let result = fs.readFileSync(path + '/templete.html', 'utf8');
-    result = result.replace(/{foldName}/g, foldName);
+    result = result.replace(/{foldName}/g, `package.js`);
     fse.outputFileSync(dist + `/${foldName}.html`, result);
     // creator-api-docs 使用的是 gulp.dest 流水线进行文件拷贝，下次可以尝试一下。
     fse.copy('./build-templete/lib', dist + `/lib`)
@@ -69,7 +70,7 @@ gulp.task('default', function (done) {
     });
 });
 // transform the script to the useful file
-gulp.task('transform', function () {
+gulp.task('browserify', function () {
     var foldName = program.fold;
     var developer = program.developer;
     let src = `./${foldName}`
@@ -77,6 +78,31 @@ gulp.task('transform', function () {
         utils.error('Can\'t find fold name.');
         return;
     }
+    // develop controll whether delete the package.js
+    if (fs.existsSync(`${src}/package.js`)) {
+        if (developer) {
+            del.sync([`${src}/package.js`], {
+                force: true
+            });
+        }
+    }
 
+    let ls = child_process.spawn(`browserify`, [`${src}/index.js`, '>', `${src}/package.js`], {
+        cwd: process.cwd(),
+        env: process.env,
+        shell: true
+    });
+
+    ls.stdout.on('data', (data) => {
+        console.log(data.toString());
+    });
+
+    ls.stdout.on('close', (code) => {
+        console.log('code: ' + code);
+    });
+
+    ls.stderr.on('data', (data) => {
+        console.log(data.toString());
+    });
 
 });

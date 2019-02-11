@@ -1,3 +1,5 @@
+const Data = require('./data');
+
 const VSHADER_SOURCE =
                     'attribute vec4 a_Position;\n' +
                     'void main () {\n' +
