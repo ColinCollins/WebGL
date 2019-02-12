@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "create": "gulp --fold",
-    "create-data": "gulp data --fold"
+    "create-data": "gulp data --fold",
+    "browserify": "gulp browserify --fold"
   },
   "author": "",
   "license": "ISC",

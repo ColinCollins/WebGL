@@ -84,6 +84,7 @@ gulp.task('browserify', function () {
             del.sync([`${src}/package.js`], {
                 force: true
             });
+            utils.pass('delete success');
         }
     }
 
