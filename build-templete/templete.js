@@ -12,7 +12,7 @@ const FSHADER_SOURCE =
                     'gl_FragColor = u_FragColor;\n'+
                     '}\n';
 
-
+window.onload = main;
 function main() {
     let canvas = document.getElementById('webgl');
     let gl = getWebGLContext(canvas);
