@@ -58,6 +58,7 @@ const VSHADER_SOURCE =
                     'attribute vec4 a_Normal;\n'+
                     'uniform mat4 u_MvpMatrix;\n'+
                     'uniform mat4 u_NormalMatrix;\n'+
+                    'uniform mat4 u_ModelMatrix;\n'+
                     'uniform vec3 u_LightColor;\n'+
                     'uniform vec3 u_LightPosition;\n'+
                     'uniform vec3 u_AmbientLight;\n'+
@@ -65,7 +66,8 @@ const VSHADER_SOURCE =
                     'void main () {\n' +
                     'gl_Position = u_MvpMatrix * a_Position; \n'+
                     'vec3 normal = normalize(vec3(u_NormalMatrix * a_Normal));\n'+
-                    'vec3 lightDirection = normalize(u_LightPosition - vec3(a_Position));\n'+
+                    'vec4 vertexPosition = vec4(u_ModelMatrix * a_Position);\n'+
+                    'vec3 lightDirection = normalize(u_LightPosition - vec3(vertexPosition));\n'+
                     'float nDotL = max(dot(lightDirection, normal), 0.0);\n'+
                     'vec3 diffuse = vec3(u_LightColor * a_Color.rgb * nDotL);\n'+
                     'vec3 ambient = vec3(u_AmbientLight * a_Color.rgb);\n'+
@@ -110,18 +112,19 @@ function main() {
     gl.uniform3fv(u_LightColor, new Vector3([1.0, 1.0, 1.0]).elements);
 
     let u_LightPosition = getUniformProp(gl, 'u_LightPosition');
-    gl.uniform3fv(u_LightPosition, new Vector3([4.0, 5.0, 2.0]).elements);
+    gl.uniform3fv(u_LightPosition, new Vector3([1.0, 1.0, 1.0]).elements);
 
     let u_AmbientLight = getUniformProp(gl, 'u_AmbientLight');
-    gl.uniform3fv(u_AmbientLight, new Vector3([0.4, 0.0, 0.0]).elements);
+    gl.uniform3fv(u_AmbientLight, new Vector3([0.4, 0.4, 0.4]).elements);
 
     let u_MvpMatrix = getUniformProp(gl, 'u_MvpMatrix');
     let u_NormalMatrix = getUniformProp(gl, 'u_NormalMatrix');
+    let u_ModelMatrix = getUniformProp(gl, 'u_ModelMatrix');
     // clientWidth 获取元素宽高
     let viewProjMatrix = new Matrix4().setPerspective(50.0, canvas.clientWidth / canvas.clientHeight, 1, 100);
     // dir origin coor
     viewProjMatrix.lookAt(
-        10.0, 10.0, 10.0,
+        10.0, 15.0, 10.0,
         0.0, 0.0, 0.0,
         0.0, 1.0, 0.0
     );
@@ -132,25 +135,28 @@ function main() {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
     document.onkeydown = function (ev) {
-        keydown(ev, gl, indices.length, viewProjMatrix, u_MvpMatrix, u_NormalMatrix);
+        keydown(ev, gl, indices.length, viewProjMatrix, u_MvpMatrix, u_NormalMatrix, u_ModelMatrix);
     }
-    draw(gl, indices.length, viewProjMatrix, u_MvpMatrix, u_NormalMatrix);
+
+    draw(gl, indices.length, viewProjMatrix, u_MvpMatrix, u_NormalMatrix, u_ModelMatrix);
 }
 
 
 // 绘制
-function draw (gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix) {
+function draw (gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix, u_ModelMatrix) {
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
     // Arm1
     var arm1Length = 1.5; // arm1 长度
     g_modelMatrix.setTranslate(2.0, -1.0, 0.0);
     g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0); // 绕 Y 轴旋转
     g_modelMatrix.scale(0.5, 2.0, 0.5);
+    gl.uniformMatrix4fv(u_ModelMatrix, false, g_modelMatrix.elements);
     drawBox(gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix);
     // Arm2 前一个 g_modelMatrix 已经将计算传入了 translate + oldMatrix
     g_modelMatrix.translate(0.0, arm1Length, 0.0); // 移动至 joint1 处
     g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0); // 绕 z 轴旋转
     g_modelMatrix.scale(1.0, 0.5, 1.0);
+    gl.uniformMatrix4fv(u_ModelMatrix, false, g_modelMatrix.elements);
     drawBox(gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix);
 }
 
@@ -165,7 +171,7 @@ function drawBox (gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix) {
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
 }
 
-function keydown (ev, gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix) {
+function keydown (ev, gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix, u_ModelMatrix) {
     switch(ev.keyCode) {
         case 38:
             if (g_joint1Angle < 135.0) {
@@ -186,7 +192,7 @@ function keydown (ev, gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix) {
             break;
         default: return;
     }
-    draw(gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix);
+    draw(gl, n, viewProjMatrix, u_MvpMatrix, u_NormalMatrix, u_ModelMatrix);
 }
 
 function bindBufferData (gl, data, target) {

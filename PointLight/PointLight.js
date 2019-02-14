@@ -47,7 +47,7 @@ function main() {
     gl.uniform3fv(u_LightColor, new Vector3([1.0, 1.0, 1.0]).elements);
 
     let u_LightPosition = getUniformProp(gl, 'u_LightPosition');
-    gl.uniform3fv(u_LightPosition, new Vector3([1.0, 4.0, 1.0]).elements);
+    gl.uniform3fv(u_LightPosition, new Vector3([10.0, 10.0, 10.0]).elements);
 
     let u_ModelMatrix = getUniformProp(gl, 'u_ModelMatrix');
     let transMatrix = new Matrix4().setTranslate(0.0, 2.0, 1.0).rotate(50.0, 0.0, 1.0, 0.0);
@@ -71,7 +71,7 @@ function main() {
     inverseMatrix.setInverseOf(transMatrix).transpose();
     gl.uniformMatrix4fv(u_NormalMatrix, false, inverseMatrix.elements);
 
-    let vertices = initVerticesData();
+    let vertices = initVerticesData();0
     let colorData = initColorData();
     let normalData = initNormalizeData();
     let indices = initIndexData();

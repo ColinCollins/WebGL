@@ -28,8 +28,6 @@ function main() {
         return;
     }
 
-
-    
     // change the color 
     var u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
     if (!u_FragColor) {
@@ -41,8 +39,6 @@ function main() {
     canvas.onmousedown = function (handle) {
         click(handle, gl, canvas, a_Position, u_FragColor);
     };
-
-
 
     // bit 存储单位 
     gl.clear(gl.COLOR_BUFFER_BIT);

@@ -8,16 +8,24 @@ const { parse } = require('path');
 const  child_process = require('child_process');
 const del = require('del');
 
-const browserify = require('browserify');
-// copy the lib into a new fold
-
 program
     .option('-f, --fold <names>', 'Create a new Chapter fold')
     .option('-b, --brunch <name>', 'Using the browserify build a js file')
+    .option('-t --test [fileNames]', 'Test file names', test, [])
     .option('-d, --developer [flag]', 'Development mode')
     .parse(process.argv);
 
 const path = './build-templete/';
+
+function test (value, memo) {
+    memo.push(value);
+    return memo;
+}
+
+gulp.task('test', function () {
+    let tests = program.test;
+    console.log(tests);
+});
 
 gulp.task('default', function (done) {
     var foldName = program.fold;
