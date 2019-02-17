@@ -30,7 +30,6 @@ function main() {
     }
 
     // custom program
-
     let verticesTexCoords = initVertexBuffers();
     let a_Position = getAttribProp(gl, 'a_Position');
     let a_TexCoord = getAttribProp(gl, 'a_TexCoord');
