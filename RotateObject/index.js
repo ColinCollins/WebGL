@@ -36,6 +36,9 @@ const FSHADER_SOURCE =
 
 window.onload = main;
 
+
+let currentAngle = [0, 0];
+
 // 手动的去初始化我们的 Shader
 function main() {
     let canvas = document.getElementById('webgl');
@@ -68,10 +71,10 @@ function main() {
     gl.uniform3fv(u_LightColor, new Vector3([1.0, 1.0, 1.0]).elements);
 
     let u_LightPosition = getUniformProp(gl, 'u_LightPosition');
-    gl.uniform3fv(u_LightPosition, new Vector3([3.0, 2.0, 3.0]).elements);
+    gl.uniform3fv(u_LightPosition, new Vector3([3.0, 4.0, 2.0]).elements);
 
     let u_AmbientLight = getUniformProp(gl, 'u_AmbientLight');
-    gl.uniform3fv(u_AmbientLight, new Vector3([0.4, 0.4, 0.4]).elements);
+    gl.uniform3fv(u_AmbientLight, new Vector3([0.6, 0.4, 0.4]).elements);
 
     bindAttribData(gl, Data.initVerticesData(), a_Position);
     bindAttribData(gl, Data.initColorData(), a_Color);
@@ -79,12 +82,43 @@ function main() {
 
     let mvpMatrix = new Matrix4().setPerspective(40.0, canvas.width/ canvas.height, 1, 100);
     mvpMatrix.lookAt(
-        3.0, 4.0, 2.0,
+        10.0, 6.0, 6.0,
         0.0, 0.0, 0.0,
         0.0, 1.0, 0.0
     );
 
-    let modelMatrix = new Matrix4().setTranslate(0.0, 1.0, 0.0).rotate(40.0, 0.0, 1.0, 0.0);
+    let image = new Image();
+    image.onload = onComplete;
+    image.src = 'file:///E:/GitStone/WebGL/res/psb.jpg';
+
+    let u_Sampler = getUniformProp(gl, 'u_Sampler0');
+    // init indices
+    let indexBuffer = gl.createBuffer();
+    let indices = Data.initIndexData();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+    function onComplete () {
+        initTexture0(gl, u_Sampler, image);
+        drawBox(gl, mvpMatrix, u_MvpMatrix, u_ModelMatrix, u_NormalMatrix, indices);
+    }
+
+    document.onmousedown = onMouseDown;
+    document.onmousemove = function (event) {
+        onMouseMove(event, canvas);
+        if (dragging) {
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            drawBox(gl, mvpMatrix, u_MvpMatrix, u_ModelMatrix, u_NormalMatrix, indices);
+        }
+    }
+    document.onmouseup = onMouseUp;
+}
+
+function drawBox (gl, mvpMatrix, u_MvpMatrix, u_ModelMatrix, u_NormalMatrix, indices) {
+    let modelMatrix = new Matrix4();
+    modelMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0);
+    modelMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0);
+    console.log(`${currentAngle[0]} : ${currentAngle[1]}`);
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
     mvpMatrix.multiply(modelMatrix);
     gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
@@ -92,16 +126,39 @@ function main() {
     let normalMatrix = new Matrix4();
     normalMatrix.setInverseOf(modelMatrix).transpose();
     gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
+    
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
+}
 
-    let image = new Image();
-    image.onload = onComplete;
-    image.src = 'file:///E:/GitStone/WebGL/res/psb.jpg';
+let pos = {x: 0, y: 0};
+let dragging = false;
+function onMouseDown (event) {
+    let x = event.clientX, y = event.clientY;
+    let rect = event.target.getBoundingClientRect();
 
-    let u_Sampler = getUniformProp(gl, 'u_Sampler0');
+    if (rect.left <= x && rect.right > x && rect.top <= y && rect.bottom > y) {
+        pos.x = x;
+        pos.y = y;
+        dragging = true;
+    } 
+}
 
-    function onComplete () {
-        initTexture0(gl, u_Sampler, image);
+function onMouseMove (event, canvas) {
+    let x = event.clientX, y = event.clientY;
+    if (dragging) {
+        let factor = 400 / canvas.height;
+        var dx = factor * (x - pos.x);
+        var dy = factor * (y - pos.y);
+
+        currentAngle[0] = Math.max(Math.min(currentAngle[0] + dy, 90.0), -90.0);
+        currentAngle[1] = currentAngle[1] + dx;
     }
+
+    pos.x = x, pos.y = y;
+}
+
+function onMouseUp (event) {
+    dragging = false;
 }
 
 function initTexture0 (gl, u_Sampler, image) {
@@ -119,13 +176,6 @@ function initTexture0 (gl, u_Sampler, image) {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform1i(u_Sampler, 0);
-
-    let indexBuffer = gl.createBuffer();
-    let indices = Data.initIndexData();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-
-    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
 }
 
 function initShaders0 (gl, VSHADER_SOURCE, FSHADER_SOURCE) {

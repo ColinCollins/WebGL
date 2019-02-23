@@ -11,7 +11,7 @@ const del = require('del');
 program
     .option('-f, --fold <names>', 'Create a new Chapter fold')
     .option('-b, --brunch <name>', 'Using the browserify build a js file')
-    .option('-t --test [fileNames]', 'Test file names', test, [])
+    .option('-t, --test [fileNames]', 'Test file names', test, [])
     .option('-d, --developer [flag]', 'Development mode')
     .parse(process.argv);
 
@@ -55,6 +55,11 @@ gulp.task('default', function (done) {
         let name = parser.name;
         if (name === 'templete') {
             let jsRes = fs.readFileSync(file, 'utf8');
+            if (ext === '.js') {
+                // \r\n 卧槽你妈哟。。。。
+                let regex = new RegExp(/\/\/\sREGION\wSTART(.|\r\n)*\/\/\sREGION\wEND/, 'gm');
+                jsRes = jsRes.replace(regex, '');
+            }
             fse.outputFileSync(dist + `/index.js`, jsRes);
         }
         else {
@@ -77,6 +82,7 @@ gulp.task('default', function (done) {
         utils.error(err);
     });
 });
+
 // transform the script to the useful file
 gulp.task('browserify', function () {
     var foldName = program.fold;

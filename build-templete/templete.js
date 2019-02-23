@@ -16,7 +16,7 @@ window.onload = main;
 function main() {
     let canvas = document.getElementById('webgl');
     let gl = getWebGLContext(canvas);
-    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+    if (!initShaders0(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
         console.error('init shader failed.');
         return;
     }
@@ -50,10 +50,7 @@ function loadShader (gl, type, source) {
         return;
     }
     let shaderTarget = gl.getShaderParameter(shader, gl.SHADER_TYPE);
-    if (shaderTarget) {
-        console.log(`shader init: ${shaderTarget}`);
-        return;
-    }
+    if (shaderTarget) console.log(`shader init: ${shaderTarget}`);
     return shader;
 }
 
@@ -71,6 +68,7 @@ function initProgram (gl, vertexShader, fragShader) {
         return false;
     }
 
+    gl.validateProgram(program);
     let validated = gl.getProgramParameter(program, gl.VALIDATE_STATUS);
     if (!validated) {
         let msg = gl.getProgramInfoLog(program);
@@ -79,8 +77,11 @@ function initProgram (gl, vertexShader, fragShader) {
     }
 
     gl.useProgram(program);
+    gl.program = program;
     return true;
 }
+
+// REGION_START
 
 // 初始化着色器，这个函数是个实验函数，不要直接拿来用
 function initShadersSelf (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
@@ -117,12 +118,15 @@ function initShadersSelf (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
     gl.useProgram(program);
     return null;
 }
+
+// REGION_END
+
 // bind Attribute data with indices
 function bindAttribData (gl, data, target) {
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFEr, data, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(target, 3, gl.FLOTA, false, 0, 0);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(target, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(target);
 }
 
