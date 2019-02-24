@@ -1,0 +1,2 @@
+1. gl.clearColor 无效？？？
+2. rotate 会逐渐的相加，所以最好初始化的时候一起初始化 modelMatrix

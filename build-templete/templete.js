@@ -122,11 +122,11 @@ function initShadersSelf (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
 // REGION_END
 
 // bind Attribute data with indices
-function bindAttribData (gl, data, target) {
+function bindAttribData (gl, data, target, format, dataLength) {
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(target, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(target, dataLength, format, false, 0, 0);
     gl.enableVertexAttribArray(target);
 }
 
