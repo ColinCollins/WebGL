@@ -1,3 +1,67 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+function initIndexData () {
+    return new Uint8Array([
+        0, 1, 2, 0, 2, 3,   // front
+        4, 5, 6, 4, 6, 7,   // right
+        8, 9, 10, 8, 10, 11,    // top
+        12, 13, 14, 12, 14, 15, // left
+        16, 17, 18, 16, 18, 19, // bottom
+        20, 21, 22, 20, 22, 23  // back
+    ]);
+}
+
+function initNormalizeData () {
+    return new Float32Array([
+        0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+        -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0,
+        0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0,
+        0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0,
+    ]);
+}
+
+function initVertexColorData () {
+    return new Float32Array([
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+        0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+    ]);
+}
+
+function initVertices () {
+    return new Float32Array([
+        1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0,
+        -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0,
+        -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
+        1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0
+    ]);
+}
+
+function initTexCoordVertices () {
+    return new Float32Array([
+        1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+        1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+        0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
+    ]);
+}
+
+module.exports = {
+    initIndexData: initIndexData,
+    initVerticesData: initVertices,
+    initColorData: initVertexColorData,
+    initNormalizeData: initNormalizeData,
+    initTexCoordVertex: initTexCoordVertices
+}
+},{}],2:[function(require,module,exports){
 const Data = require('./data');
 
 const VSHADER_SOURCE =
@@ -45,7 +109,7 @@ function main() {
     // 透视矩阵
     let viewProjMatrix = new Matrix4().setPerspective(50.0, canvas.width / canvas.height, 1, 100);
     viewProjMatrix.lookAt(
-        0.0, 2.0, 3.0,
+        0.0, 0.0, 2.0,
         0.0, 0.0, 0.0,
         0.0, 1.0, 0.0
     );
@@ -275,3 +339,4 @@ function getUniformProp (gl, name) {
     }
     return prop;
 }
+},{"./data":1}]},{},[2]);
