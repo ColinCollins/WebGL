@@ -22,6 +22,7 @@ function main() {
     }
 
     // custom program
+    gl.enable(gl.DEPTH_TEST);
 
 }
 
@@ -29,8 +30,8 @@ function initShaders0 (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
     let vertexShader = loadShader(gl, gl.VERTEX_SHADER, VSHADER_SOURCE);
     let fragShader = loadShader(gl, gl.FRAGMENT_SHADER, FSHADER_SOURCE);
 
-    let flag = initProgram(gl, vertexShader, fragShader);
-    if (!flag) {
+    let program = initProgram(gl, vertexShader, fragShader);
+    if (!program) {
         console.error('init Shader error');
         return false;
     }
@@ -65,7 +66,7 @@ function initProgram (gl, vertexShader, fragShader) {
     if (!linked) {
         let msg = gl.getProgramInfoLog(program);
         console.error(`init program link error: ${msg}`);
-        return false;
+        return null;
     }
 
     gl.validateProgram(program);
@@ -73,12 +74,13 @@ function initProgram (gl, vertexShader, fragShader) {
     if (!validated) {
         let msg = gl.getProgramInfoLog(program);
         console.error(`int program validate error: ${msg}`);
-        return false;
+        return null;
     }
 
     gl.useProgram(program);
     gl.program = program;
-    return true;
+
+    return program;
 }
 
 

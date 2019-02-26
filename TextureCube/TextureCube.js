@@ -46,8 +46,6 @@ function main() {
     gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
     let cubeVertex = initVertices();
-    let size = cubeVertex.BYTES_PER_ELEMENT;
-
     let texCoordVertex = initTexCoordVertices();
 
     let vertexBuffer = gl.createBuffer();
