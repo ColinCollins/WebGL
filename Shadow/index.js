@@ -1,5 +1,3 @@
-const Data = require('./data');
-
 const SHADOW_VSHADER_SOURCE = 
                             'attribute vec4 a_Positoin;\n'+
                             'uniform mat4 u_MvpMatrix;\n'+
@@ -7,7 +5,7 @@ const SHADOW_VSHADER_SOURCE =
                             'gl_Position = u_MvpMatrix * a_Position;\n'+
                             '}';
 
-const SHADER_FSHADER_SOURCE = 
+const SHADOW_FSHADER_SOURCE = 
                             'precision mediump float;\n'+
                             'void main () {\n'+
                             // 通过 gl_FragCoord 记录坐标系 z 轴。 gl_FragCoord 是内置变量，用于保存片元坐标
@@ -34,6 +32,7 @@ const FSHADER_SOURCE =
                     'varying vec4 v_Color;\n'+
                     'void main() {\n' +
                     // 归一化，计算当前对象的深度值，以及获取当前对象的纹理 uv 坐标. 公式是固定的，通过这种方式获取对象 0 ~ 1 内容
+                    // (v_PositionFromLight.xyz / v_PositionFromLight.w) -> [-1, 1]
                     'vec3 shadowCoord = (v_PositionFromLigth.xyz / v_PositionFromLight.w) / 2.0 + 0.5;\n'+
                     'vec4 rgbaDepth = texture2D(u_ShadowMap, shadowCoord.xy);\n'+
                     'float depth = rgbaDepth.r;\n'+
@@ -51,8 +50,6 @@ let LIGHT_Z = 2.0;
 function main() {
     let canvas = document.getElementById('webgl');
     let gl = getWebGLContext(canvas);
-    initShaders0(gl, VSHADER_SOURCE, FSHADER_SOURCE);
-
     // custom program
     gl.enable(gl.DEPTH_TEST);
     let shadowProgram = initShaders0(gl, SHADOW_VSHADER_SOURCE, SHADOW_FSHADER_SOURCE);
