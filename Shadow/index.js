@@ -69,7 +69,7 @@ function main() {
     let pIndexData = new Uint8Array([0, 1, 2,   0, 2, 3]);
     // tVertexData data
     let tVertexData = new Float32Array([
-        -0.2, 3.0, 0.5,
+        -0.2, 3.0, -0.8,
         -1.0, 3.0, 1.0,
         1.0, 3.0, 1.0
     ]);
@@ -85,7 +85,7 @@ function main() {
     gl.bindTexture(gl.TEXTURE_2D, fbo.texture);
 
     let viewProjMatrixFromLight = new Matrix4(); // 为阴影贴图准备
-    viewProjMatrixFromLight.setPerspective(70.0, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, 1, 100);
+    viewProjMatrixFromLight.setPerspective(40.0, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, 1, 100);
     viewProjMatrixFromLight.lookAt(
         LIGHT_X, LIGHT_Y, LIGHT_Z,
         0.0, 0.0, 0.0,
@@ -106,6 +106,8 @@ function main() {
     let mvpMatrixFromLight_p = new Matrix4();
 
     normalProgram.u_ShadowMap = getUniformProp(gl, 'u_ShadowMap', normalProgram);
+    normalProgram.a_Color = getAttribProp(gl, 'a_Color', normalProgram);
+    normalProgram.u_MvpMatrixFromLight = getUniformProp(gl, 'u_MvpMatrixFromLight', normalProgram);
 
     let tick = function () {
         currentAngle = animate(currentAngle);
@@ -138,8 +140,6 @@ function main() {
        drawPlane(gl, normalProgram, pVertexData, pIndexData, viewProjMatrix);
        mvpMatrixFromLight_p.set(g_mvpMatrix);
        window.requestAnimationFrame(tick, canvas);
-
-        window.requestAnimationFrame(tick, canvas);
     }
     tick();
 }

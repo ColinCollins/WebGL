@@ -16,6 +16,7 @@ const SHADOW_FSHADER_SOURCE =
 const VSHADER_SOURCE =
                     'attribute vec4 a_Position;\n' +
                     'attribute vec4 a_Color;\n'+
+                    'attribute vec4 a_Normal;\n'+
                     'uniform mat4 u_MvpMatrix;\n'+
                     'uniform mat4 u_MvpMatrixFromLight;\n'+
                     'varying vec4 v_PositionFromLight;\n'+
@@ -44,7 +45,7 @@ const FSHADER_SOURCE =
 window.onload = main;
 let OFFSCREEN_WIDTH = 1024, OFFSCREEN_HEIGHT = 1024;
 let LIGHT_X = 0.0;
-let LIGHT_Y = 6.0;
+let LIGHT_Y = 7.0;
 let LIGHT_Z = 2.0;
 
 function main() {
@@ -69,7 +70,7 @@ function main() {
     let pIndexData = new Uint8Array([0, 1, 2,   0, 2, 3]);
     // tVertexData data
     let tVertexData = new Float32Array([
-        -0.4, 3.0, -0.8,
+        -0.2, 3.0, -0.8,
         -1.0, 3.0, 1.0,
         1.0, 3.0, 1.0
     ]);
@@ -94,7 +95,7 @@ function main() {
     
     let viewProjMatrix = new Matrix4().setPerspective(45.0, canvas.width / canvas.height, 1, 100);
     viewProjMatrix.lookAt(
-        0.0, 7.0, 5.0,
+        0.0, 7.0, 9.0,
         0.0, 0.0, 0.0,
         0.0, 1.0, 0.0
     );
@@ -106,8 +107,9 @@ function main() {
     let mvpMatrixFromLight_p = new Matrix4();
 
     normalProgram.u_ShadowMap = getUniformProp(gl, 'u_ShadowMap', normalProgram);
-    normalProgram.u_MvpMatrixFromLight = getUniformProp(gl, 'u_MvpMatrixFromLight', normalProgram);
     normalProgram.a_Color = getAttribProp(gl, 'a_Color', normalProgram);
+    normalProgram.u_MvpMatrixFromLight = getUniformProp(gl, 'u_MvpMatrixFromLight', normalProgram);
+
     let tick = function () {
         currentAngle = animate(currentAngle);
         // 将绘制目标切换成帧缓冲区
@@ -122,23 +124,23 @@ function main() {
         drawPlane(gl, shadowProgram, pVertexData, pIndexData, viewProjMatrixFromLight);
         mvpMatrixFromLight_p.set(g_mvpMatrix);
 
-        // 将绘制目标切换为颜色缓冲区
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.useProgram(normalProgram); // 正常绘制
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        // u_sampler
-        gl.uniform1i(normalProgram.u_ShadowMap, 0); // 传递 gl.TEXTURE0
-        bindAttribData(gl, tColorData, normalProgram.a_Color, gl.FLOAT, 3);
-        // 传入 mvpMatrixFormLight
-        gl.uniformMatrix4fv(normalProgram.u_MvpMatrixFromLight, false, viewProjMatrixFromLight.elements);
-        drawTriangle(gl, normalProgram, tVertexData, tIndexData, currentAngle, viewProjMatrix);
-        mvpMatrixFromLight_t.set(g_mvpMatrix);
-        bindAttribData(gl, pColorData, normalProgram.a_Color, gl.FLOAT, 3);
-        gl.uniformMatrix4fv(normalProgram.u_MvpMatrixFromLight, false, viewProjMatrixFromLight.elements);
-        drawPlane(gl, normalProgram, pVertexData, pIndexData, viewProjMatrix);
-        mvpMatrixFromLight_p.set(g_mvpMatrix);
-        window.requestAnimationFrame(tick, canvas);
+       // 将绘制目标切换为颜色缓冲区
+       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+       gl.useProgram(normalProgram); // 正常绘制
+       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+       gl.viewport(0, 0, canvas.width, canvas.height);
+       // u_sampler
+       gl.uniform1i(normalProgram.u_ShadowMap, 0); // 传递 gl.TEXTURE0
+       bindAttribData(gl, tColorData, normalProgram.a_Color, gl.FLOAT, 3);
+       // 传入 mvpMatrixFormLight
+       gl.uniformMatrix4fv(normalProgram.u_MvpMatrixFromLight, false, mvpMatrixFromLight_t.elements);
+       drawTriangle(gl, normalProgram, tVertexData, tIndexData, currentAngle, viewProjMatrix);
+       mvpMatrixFromLight_t.set(g_mvpMatrix);
+       bindAttribData(gl, pColorData, normalProgram.a_Color, gl.FLOAT, 3);
+       gl.uniformMatrix4fv(normalProgram.u_MvpMatrixFromLight, false, mvpMatrixFromLight_p.elements);
+       drawPlane(gl, normalProgram, pVertexData, pIndexData, viewProjMatrix);
+       mvpMatrixFromLight_p.set(g_mvpMatrix);
+       window.requestAnimationFrame(tick, canvas);
     }
     tick();
 }
@@ -152,7 +154,6 @@ function drawTriangle (gl, program, data, indices, angle, mvpMatrix) {
     let modelMatrix = new Matrix4().setRotate(angle, 0, 1.0, 0);
     mvpMatrix.multiply(modelMatrix);
     g_mvpMatrix.set(mvpMatrix);
-
     gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
     drawElement(gl, indices);
 }
@@ -267,7 +268,7 @@ function animate(angle) {
     var now = +new Date();
     var elapsed = now - last;
     last = now;
-    var newAngle = angle + (angle_step * elapsed) / 60000.0;
+    var newAngle = angle + (angle_step*elapsed) / 60000.0;
     return newAngle % 360;
 }
 
