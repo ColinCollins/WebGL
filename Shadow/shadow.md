@@ -45,3 +45,14 @@ http://www.opengpu.org/forum.php?mod=viewthread&tid=2164
 ```
 
 shadowCoord 是什么？？？
+
+
+使用 framebufferObject 的时候重点有两个：
+1. 重新更新数据
+2. **viewport 一定要准备切换，不然 framebuffer texture 尺寸就会有偏差**
+
+siwthc program 后需要更细的 data 有哪些？
+1. array_buffer 涉及 data
+2. element_array_buffer 不一定，但是可能会，若是绘制的物体不同
+3. uniform 数据不一定更新，因此绑定在对应的 program 是最好的
+4. 按照 c++ 的写法，我们需要创建一个 program 类，用于存储可能会用到的类型在 default shader 中，1. 可以拓展一个借口用于传入特定的 shader 2. 然后增添对应的 program 属性
