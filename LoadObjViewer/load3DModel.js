@@ -87,7 +87,7 @@ function loadOBJ (path) {
       });
 }
 /**
- * material: 
+ * material:
  * Ns 高光权重
  * Ki 光学密度
  * d 透明度
