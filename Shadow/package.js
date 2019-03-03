@@ -38,7 +38,7 @@ const FSHADER_SOURCE =
                     'vec4 rgbaDepth = texture2D(u_ShadowMap, shadowCoord.xy);\n'+
                     'float depth = rgbaDepth.r;\n'+
                     // 0.005 用于清除马赫带阴影绘制误差
-                    'float visibility = (shadowCoord.z > depth + 0.005) ? 0.7 : 1.0;\n'+
+                    'float visibility = (shadowCoord.z > depth) ? 0.7 : 1.0;\n'+
                     'gl_FragColor = vec4(v_Color.rgb * visibility, v_Color.a);\n'+
                     '}\n';
 
