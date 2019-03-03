@@ -1,4 +1,4 @@
-const Data = require('./data');
+const load3D = require('./load3DModel');
 
 const VSHADER_SOURCE =
                     'attribute vec4 a_Position;\n' +
