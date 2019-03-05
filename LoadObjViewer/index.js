@@ -4,10 +4,10 @@ const VSHADER_SOURCE =
                     'attribute vec4 a_Position;\n' +
                     'attribute vec4 a_Normal;\n'+
                     'attribute vec2 a_TexCoord;\n'+
-                    'uniform vec4 u_AmbientLight;\n'+
-                    'uniform vec4 u_LightColor;\n'+
-                    'uniform mat4 u_DiffuseColor;\n'+
-                    'uniform mat4 u_LightPosition;\n'+
+                    'uniform vec3 u_AmbientLight;\n'+
+                    'uniform vec3 u_DiffuseColor;\n'+
+                    'uniform vec3 u_LightColor;\n'+
+                    'uniform vec3 u_LightPosition;\n'+
                     'uniform mat4 u_MvpMatrix;\n'+
                     'uniform mat4 u_ModelMatrix;\n'+
                     'uniform mat4 u_NormalMatrix;\n'+
@@ -17,17 +17,17 @@ const VSHADER_SOURCE =
                     'gl_Position = u_MvpMatrix * a_Position; \n'+
                     'vec3 vertexPosition = vec3(normalize(u_LightPosition - vec3(u_ModelMatrix * a_Position)));\n'+
                     'vec3 normal = vec3(u_NormalMatrix * a_Normal);\n'+
-                    'float nDotL = max(dot(vertexPosition, normal));\n'+
-                    'vec3 diffuse = a_LightColor * a_Color.rgb * nDotL;\n'+
-                    'vec3 ambient = u_AmbientLight * a_Color.rgb;\n'+
-                    'v_Color = vec4(diffuse + ambient, a_Color.a);\n'+
+                    'float nDotL = max(dot(vertexPosition, normal), 0.0);\n'+
+                    'vec3 diffuse = u_LightColor * u_DiffuseColor * nDotL;\n'+
+                    'vec3 ambient = u_AmbientLight;\n'+
+                    'v_Color = vec4(diffuse + ambient, 1.0);\n'+
                     'v_TexCoord = a_TexCoord;\n'+
                     '}\n';
 const FSHADER_SOURCE =
                     'precision mediump float;\n'+
                     'varying vec4 v_Color;\n'+
                     'varying vec2 v_TexCoord;\n'+
-                    'uniform sampler u_Sampler;\n'+
+                    'uniform sampler2D u_Sampler;\n'+
                     'void main() {\n' +
                     'vec4 textureColor = texture2D(u_Sampler, v_TexCoord);\n'+
                     'gl_FragColor = v_Color * textureColor;\n'+
@@ -55,7 +55,7 @@ function main() {
     }
     let mtlProp = parseMtlRes(mtlRes);
     // let the image become a param belong to the callback method
-    let texture = load3D.loadTex(texPath, callback);
+    load3D.loadTex(texPath, callback);
     // attribute
     program.a_Position = getAttribProp(gl, 'a_Position', program);
     program.a_Normal = getAttribProp(gl, 'a_Normal', program);
@@ -124,6 +124,10 @@ function parseMtlRes (mtlRes) {
     }
 }
 
+function draw (gl) {
+
+}
+
 function initTexture (gl, image, sampler, textureCache) {
     let texture = gl.createTexture();
     if (textureCache)
@@ -131,7 +135,7 @@ function initTexture (gl, image, sampler, textureCache) {
     else
         gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    
+
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTUER_MIN_FILTER, gl.NEAREST);
@@ -191,8 +195,6 @@ function initProgram (gl, vertexShader, fragShader) {
 
     return program;
 }
-
-
 
 // bind Attribute data with indices
 function bindAttribData (gl, data, target, format, dataLength) {

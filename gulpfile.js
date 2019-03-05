@@ -84,7 +84,7 @@ gulp.task('default', function (done) {
 });
 
 // transform the script to the useful file
-gulp.task('browserify', function () {
+gulp.task('browserify', function (done) {
     var foldName = program.fold;
     var developer = program.developer;
     let src = `./${foldName}`
@@ -113,6 +113,7 @@ gulp.task('browserify', function () {
     });
 
     ls.stdout.on('close', (code) => {
+        done();
         console.log('code: ' + code);
     });
 

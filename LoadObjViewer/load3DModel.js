@@ -1,4 +1,4 @@
-const fs = require('fs');
+const read = require('read-file');
 const MTLFile = require('./impl/MTLFile');
 /**
  * v -> vertex -> a_Position 
@@ -15,7 +15,7 @@ function loadOBJ (path) {
     var f = []
     var fn = []
     var ft = []
-    let stream = fs.readFileSync(path);
+    let stream = read.sync(path);
     stream.pipe(split())
       .on("data", function(line) {
         if(line.length === 0 || line.charAt(0) === "#") {
@@ -29,21 +29,21 @@ function loadOBJ (path) {
             }
             v.push([+toks[1], +toks[2], +toks[3]]);
           break;
-  
+
           case "vn":
             if(toks.length < 3) {
               throw new Error("parse-obj: Invalid vertex normal:"+ line);
             }
             vn.push([+toks[1], +toks[2], +toks[3]]);
           break;
-  
+
           case "vt":
             if(toks.length < 2) {
               throw new Error("parse-obj: Invalid vertex texture coord:" + line);
             }
             vt.push([+toks[1], +toks[2]]);
           break;
-  
+
           case "f":
             var position = new Array(toks.length-1);
             var normal = new Array(toks.length-1);
@@ -99,16 +99,16 @@ function loadOBJ (path) {
  * @return materials[]
  */
 function loadMTL (path) {
-    let result = fs.readFileSync(path, {
+    let result = read.sync(path, {
         encoding: 'utf8'
     });
-    
+
    let mtl = new MTLFile(result);
    return mtl.parse();
 }
 
 function loadTexture (path, callback) {
-    if (!path || fs.existsSync(path)) {
+    if (!path || read.sync(path)) {
         console.warn(`Can't find image res to load`);
         return null;
     }
