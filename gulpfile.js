@@ -12,6 +12,7 @@ program
     .option('-f, --fold <names>', 'Create a new Chapter fold')
     .option('-b, --brunch <name>', 'Using the browserify build a js file')
     .option('-t, --test [fileNames]', 'Test file names', test, [])
+    .option('-o, --optionsBrowserify <str>', 'browserify transfrom to package require, Optionally use a colon separator to set the target.')
     .option('-d, --developer [flag]', 'Development mode')
     .parse(process.argv);
 
@@ -84,9 +85,11 @@ gulp.task('default', function (done) {
 });
 
 // transform the script to the useful file
-gulp.task('browserify', function (done) {
+gulp.task('br', function (done) {
     var foldName = program.fold;
     var developer = program.developer;
+    var requires = program.optionsBrowserify;
+
     let src = `./${foldName}`
     if (!foldName) {
         utils.error('Can\'t find fold name.');
@@ -102,7 +105,10 @@ gulp.task('browserify', function (done) {
         }
     }
 
-    let ls = child_process.spawn(`browserify`, [`${src}/index.js`, '>', `${src}/package.js`], {
+    let reArray = requires.length > 0 ? ['-r', requires] : [];
+    let command = [`${src}/index.js`, '>', `${src}/package.js`];
+    command = command.concat(reArray);
+    let ls = child_process.spawn(`browserify`, command, {
         cwd: process.cwd(),
         env: process.env,
         shell: true

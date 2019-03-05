@@ -6,7 +6,7 @@
   "scripts": {
     "create": "gulp --fold",
     "create-data": "gulp data --fold",
-    "browserify": "gulp browserify --fold"
+    "br": "gulp br"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +17,6 @@
     "del": "^3.0.0",
     "fs-extra": "^7.0.1",
     "globby": "^9.0.0",
-    "gulp": "^4.0.0",
-    "read-file": "^0.2.0"
+    "gulp": "^4.0.0"
   }
 }

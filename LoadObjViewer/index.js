@@ -32,6 +32,7 @@ const FSHADER_SOURCE =
                     'vec4 textureColor = texture2D(u_Sampler, v_TexCoord);\n'+
                     'gl_FragColor = v_Color * textureColor;\n'+
                     '}\n';
+
 window.onload = main;
 function main() {
     let canvas = document.getElementById('webgl');

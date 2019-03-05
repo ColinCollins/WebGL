@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 
@@ -417,6 +417,7 @@ const FSHADER_SOURCE =
                     'vec4 textureColor = texture2D(u_Sampler, v_TexCoord);\n'+
                     'gl_FragColor = v_Color * textureColor;\n'+
                     '}\n';
+
 window.onload = main;
 function main() {
     let canvas = document.getElementById('webgl');
@@ -608,7 +609,7 @@ function getUniformProp (gl, name) {
     return prop;
 }
 },{"./load3DModel":3}],3:[function(require,module,exports){
-const read = require('read-file');
+const fs = require('fs');
 const MTLFile = require('./impl/MTLFile');
 /**
  * v -> vertex -> a_Position 
@@ -625,7 +626,7 @@ function loadOBJ (path) {
     var f = []
     var fn = []
     var ft = []
-    let stream = read.sync(path);
+    let stream = fs.readFileSync(path);
     stream.pipe(split())
       .on("data", function(line) {
         if(line.length === 0 || line.charAt(0) === "#") {
@@ -709,7 +710,7 @@ function loadOBJ (path) {
  * @return materials[]
  */
 function loadMTL (path) {
-    let result = read.sync(path, {
+    let result = fs.readFileSync(path, {
         encoding: 'utf8'
     });
 
@@ -718,7 +719,7 @@ function loadMTL (path) {
 }
 
 function loadTexture (path, callback) {
-    if (!path || read.sync(path)) {
+    if (!path || fs.existsSync(path)) {
         console.warn(`Can't find image res to load`);
         return null;
     }
@@ -741,67 +742,6 @@ module.exports = {
   loadMTL: loadMTL,
   loadTex: loadTexture
 }
-},{"./impl/MTLFile":1,"read-file":5}],4:[function(require,module,exports){
+},{"./impl/MTLFile":1,"fs":"fs"}],"fs":[function(require,module,exports){
 
-},{}],5:[function(require,module,exports){
-/**
- * read-file <https://github.com/assemble/read-file>
- *
- * Copyright (c) 2014, 2015 Jon Schlinkert.
- * Licensed under the MIT license.
- */
-
-var fs = require('fs');
-
-function read(fp, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts;
-    opts = {};
-  }
-
-  if (typeof cb !== 'function') {
-    throw new TypeError('read-file async expects a callback function.');
-  }
-
-  if (typeof fp !== 'string') {
-    cb(new TypeError('read-file async expects a string.'));
-  }
-
-  fs.readFile(fp, opts, function (err, buffer) {
-    if (err) return cb(err);
-    cb(null, normalize(buffer, opts));
-  });
-}
-
-read.sync = function(fp, opts) {
-  if (typeof fp !== 'string') {
-    throw new TypeError('read-file sync expects a string.');
-  }
-  try {
-    return normalize(fs.readFileSync(fp, opts), opts);
-  } catch (err) {
-    err.message = 'Failed to read "' + fp + '": ' + err.message;
-    throw new Error(err);
-  }
-};
-
-function normalize(str, opts) {
-  str = stripBom(str);
-  if (typeof opts === 'object' && opts.normalize === true) {
-    return String(str).replace(/\r\n|\n/g, '\n');
-  }
-  return str;
-}
-
-function stripBom(str) {
-  return typeof str === 'string' && str.charAt(0) === '\uFEFF'
-    ? str.slice(1)
-    : str;
-}
-
-/**
- * Expose `read`
- */
-
-module.exports = read;
-},{"fs":4}]},{},[2]);
+},{}]},{},[2]);

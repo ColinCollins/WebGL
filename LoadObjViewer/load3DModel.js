@@ -1,4 +1,4 @@
-const read = require('read-file');
+const fs = require('fs');
 const MTLFile = require('./impl/MTLFile');
 /**
  * v -> vertex -> a_Position 
@@ -15,7 +15,7 @@ function loadOBJ (path) {
     var f = []
     var fn = []
     var ft = []
-    let stream = read.sync(path);
+    let stream = fs.readFileSync(path);
     stream.pipe(split())
       .on("data", function(line) {
         if(line.length === 0 || line.charAt(0) === "#") {
@@ -99,7 +99,7 @@ function loadOBJ (path) {
  * @return materials[]
  */
 function loadMTL (path) {
-    let result = read.sync(path, {
+    let result = fs.readFileSync(path, {
         encoding: 'utf8'
     });
 
@@ -108,7 +108,7 @@ function loadMTL (path) {
 }
 
 function loadTexture (path, callback) {
-    if (!path || read.sync(path)) {
+    if (!path || fs.existsSync(path)) {
         console.warn(`Can't find image res to load`);
         return null;
     }
