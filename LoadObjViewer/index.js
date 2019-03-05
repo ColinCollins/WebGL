@@ -34,7 +34,7 @@ const FSHADER_SOURCE =
                     '}\n';
 
 window.onload = main;
-function main() {
+async function main() {
     let canvas = document.getElementById('webgl');
     let gl = getWebGLContext(canvas);
     let program = initShaders0(gl, VSHADER_SOURCE, FSHADER_SOURCE);
@@ -47,10 +47,12 @@ function main() {
     const objPath = 'E:\\GitStone\\WebGL\\res\\Iron_Man_Mark_42\\Mark 42.obj';
     const mtlPath = 'E:\\GitStone\\WebGL\\res\\Iron_Man_Mark_42\\Mark 42.mtl';
     const texPath = 'E:\\GitStone\\WebGL\\res\\Iron_Man_Mark_42\\maps\\42.png';
+    let objRes = {};
+    let mtlRes = [];
 
-    let objRes = load3D.loadOBJ(objPath);
+    await load3D.loadOBJ(objPath, objRes);
     // mtl will return a array
-    let mtlRes = load3D.loadMTL(mtlPath);
+    await load3D.loadMTL(mtlPath, mtlRes);
     if (mtlRes.length === 1) {
         console.log(`Material res num: ${mtlRes.length}`);
     }

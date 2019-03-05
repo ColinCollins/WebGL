@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('browserify-fs');
 const MTLFile = require('./impl/MTLFile');
 /**
  * v -> vertex -> a_Position 
@@ -8,15 +8,15 @@ const MTLFile = require('./impl/MTLFile');
  * fn -> indicesNormal
  * ft -> indicesTexture(UV)
  */
-function loadOBJ (path) {
-    var v = []
-    var vn = []
-    var vt = []
-    var f = []
-    var fn = []
-    var ft = []
-    let stream = fs.readFileSync(path);
-    stream.pipe(split())
+async function loadOBJ (path, target) {
+    let v = [], vn = [], vt = [];
+    let f = [], fn = [], ft = [];
+    await fs.readFile(path, function (err, stream) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        stream.pipe(split())
       .on("data", function(line) {
         if(line.length === 0 || line.charAt(0) === "#") {
           return;
@@ -74,7 +74,7 @@ function loadOBJ (path) {
         cb(err, null)
       })
       .on("end", function() {
-        let obj = {
+        target = {
             vertexData: v,
             normalData: vn,
             textureData: vt,
@@ -83,8 +83,8 @@ function loadOBJ (path) {
             faceNormals: fn,
             faceUVs: ft
         }
-        return obj;
       });
+    });
 }
 /**
  * material:
@@ -98,13 +98,15 @@ function loadOBJ (path) {
  * new Matrix
  * @return materials[]
  */
-function loadMTL (path) {
-    let result = fs.readFileSync(path, {
+async function loadMTL (path, target) {
+    await fs.readFile(path, {
         encoding: 'utf8'
+    }, function (err, data) {
+        let mtl = new MTLFile(data);
+        for (let i = 0; i < mtl.length; i++) {
+            target.push(mtl[i]);
+        }
     });
-
-   let mtl = new MTLFile(result);
-   return mtl.parse();
 }
 
 function loadTexture (path, callback) {

@@ -1,0 +1,1 @@
+1. 3.6 新增记录需求，调整 gulpfile create package 之后调整 npm run br 的 --fold 对象为 create project 名称。
