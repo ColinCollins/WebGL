@@ -104,8 +104,11 @@ gulp.task('br', function (done) {
             utils.pass('delete success');
         }
     }
+    let reArray = [];
+    if (requires && requires.length > 0) {
+        reArray = ['-r', requires];
+    }
 
-    let reArray = requires.length > 0 ? ['-r', requires] : [];
     let command = [`${src}/index.js`, '>', `${src}/package.js`];
     command = command.concat(reArray);
     let ls = child_process.spawn(`browserify`, command, {
