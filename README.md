@@ -6,3 +6,9 @@
 
 BYTE 是 8 位 到 1024
 SHORT 是 16 位存储索引量更多
+
+3. 绘制球体：
+http://lulier.github.io/2018/06/12/webGL%E7%90%83%E4%BD%93%E6%A8%A1%E5%9E%8B/index.html 算法精讲 drawElements
+https://www.web-tinker.com/article/20167.html drawArray 目测闭合效果可能会更好一些
+
+https://en.wikipedia.org/wiki/Oak3D js webgl 3d 图形绘制开源库

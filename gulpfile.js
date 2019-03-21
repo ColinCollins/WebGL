@@ -109,9 +109,9 @@ gulp.task('br', function (done) {
         reArray = ['-r', requires];
     }
 
-    let command = [`${src}/index.js`, '>', `${src}/package.js`];
+    let command = [`${src}/index.js`, '-o', `${src}/package.js`];
     command = command.concat(reArray);
-    let ls = child_process.spawn(`browserify`, command, {
+    let ls = child_process.spawn(`watchify`, command, {
         cwd: process.cwd(),
         env: process.env,
         shell: true
