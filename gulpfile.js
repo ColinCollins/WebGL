@@ -16,7 +16,8 @@ program
     .option('-d, --developer [flag]', 'Development mode')
     .parse(process.argv);
 
-const path = './build-templete/';
+const WEBGL_PROJECT_TEMPLATE_PATH = './Template/build-template/';
+const OPENGL_PROJECT_TEMPLATE_PATH = './Template/opengl-template/';
 
 function test (value, memo) {
     memo.push(value);
@@ -27,7 +28,7 @@ gulp.task('test', function () {
     let tests = program.test;
     console.log(tests);
 });
-
+// #region webgl project template
 gulp.task('default', function (done) {
     var foldName = program.fold;
     var developer = program.developer;
@@ -45,7 +46,7 @@ gulp.task('default', function (done) {
     }
     fs.mkdirSync(dist);
 
-    let files = globby.sync(`${path}*`, {
+    let files = globby.sync(`${WEBGL_PROJECT_TEMPLATE_PATH}*`, {
         expandDirectories: {
             extensions: ['.js']
         }
@@ -54,10 +55,11 @@ gulp.task('default', function (done) {
         let parser = parse(file);
         let ext = parser.ext;
         let name = parser.name;
-        if (name === 'templete') {
+        // 清除多余的注释部分
+        if (name === 'template') {
             let jsRes = fs.readFileSync(file, 'utf8');
             if (ext === '.js') {
-                // \r\n 卧槽你妈哟。。。。
+                // \r\n window 烦躁。。。。
                 let regex = new RegExp(/\/\/\sREGION\wSTART(.|\r\n)*\/\/\sREGION\wEND/, 'gm');
                 jsRes = jsRes.replace(regex, '');
             }
@@ -70,11 +72,11 @@ gulp.task('default', function (done) {
         }
     });
 
-    let result = fs.readFileSync(path + '/templete.html', 'utf8');
+    let result = fs.readFileSync(WEBGL_PROJECT_TEMPLATE_PATH + '/template.html', 'utf8');
     result = result.replace(/{foldName}/g, `package.js`);
-    fse.outputFileSync(dist + `/${foldName}.html`, result);
+    fse.outputFileSync(`${dist}/${foldName}.html`, result);
     // creator-api-docs 使用的是 gulp.dest 流水线进行文件拷贝，下次可以尝试一下。
-    fse.copy('./build-templete/lib', dist + `/lib`)
+    fse.copy(`${WEBGL_PROJECT_TEMPLATE_PATH}/lib`, `${dist}/lib`)
     .then(() => {
         utils.pass('Copy lib finished.');
         done();
@@ -83,6 +85,62 @@ gulp.task('default', function (done) {
         utils.error(err);
     });
 });
+// #endregion
+
+// #region learn opengl project template
+gulp.task('openglProject', (done) => {
+    var foldName = program.fold;
+    var developer = program.developer;
+
+    let dist = `./openglProject/${foldName}`;
+    if (!foldName) {
+        utils.error('Can\'t find fold name.');
+        return;
+    }
+    if (fs.existsSync(dist)) {
+        utils.warn('fold already exists');
+        if (!developer)  return;
+        del.sync([`${dist}/**`], {
+            force: true
+        });
+    }
+    fs.mkdirSync(dist);
+    // copy all js file to dest
+    let files = globby.sync(`${OPENGL_PROJECT_TEMPLATE_PATH}*`, {
+        expandDirectories: {
+            extensions: ['.js']
+        }
+    });
+
+    files.forEach((file) => {
+        let parser = parse(file);
+        let ext = parser.ext;
+        let name = parser.name;
+        let desPath = dist + '/' + name + ext;
+        fs.copyFileSync(file, desPath);
+    });
+
+    // copy html file
+    let result = fs.readFileSync(OPENGL_PROJECT_TEMPLATE_PATH + '/template.html', 'utf8');
+    result = result.replace(/{foldName}/g, `package.js`);
+    fse.outputFileSync(dist + `/${foldName}.html`, result);
+
+    // copy lib fold and glsl fold
+    fse.copy(`${OPENGL_PROJECT_TEMPLATE_PATH}/lib`, `${dist}/lib`)
+    .then(() => {
+        utils.pass('data lib finished.');
+        fse.copy(`${OPENGL_PROJECT_TEMPLATE_PATH}/glsl`, `${dist}/glsl`)
+        .then(() => {
+            utils.pass('data glsl finished.');
+            done();
+        })
+    }).
+    catch((err) => {
+        utils.error(err);
+    });
+});
+
+// #endregion
 
 // transform the script to the useful file
 gulp.task('br', function (done) {

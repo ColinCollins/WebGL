@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "create": "gulp --fold",
+    "opengl": "gulp openglProject --fold",
     "create-data": "gulp data --fold",
     "br": "gulp br"
   },
