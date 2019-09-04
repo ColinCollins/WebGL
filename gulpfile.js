@@ -9,7 +9,7 @@ const  child_process = require('child_process');
 const del = require('del');
 
 program
-    .option('-f, --fold <names>', 'Create a new Chapter fold')
+    .option('-f, --fold <names>', 'Create a new Chapter fold or specified the inputFold')
     .option('-b, --brunch <name>', 'Using the browserify build a js file')
     .option('-t, --test [fileNames]', 'Test file names', test, [])
     .option('-o, --optionsBrowserify <str>', 'browserify transfrom to package require, Optionally use a colon separator to set the target.')
@@ -24,9 +24,10 @@ function test (value, memo) {
     return memo;
 }
 
-gulp.task('test', function () {
+gulp.task('test', function (done) {
     let tests = program.test;
     console.log(tests);
+    done();
 });
 // #region webgl project template
 gulp.task('default', function (done) {
@@ -144,6 +145,7 @@ gulp.task('openglProject', (done) => {
 
 // transform the script to the useful file
 gulp.task('br', function (done) {
+    console.log(__dirname);
     var foldName = program.fold;
     var developer = program.developer;
     var requires = program.optionsBrowserify;
@@ -185,7 +187,7 @@ gulp.task('br', function (done) {
     });
 
     ls.stderr.on('data', (data) => {
-        console.log(data.toString());
+        console.log(data.toString("utf8"));
     });
 
 });

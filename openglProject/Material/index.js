@@ -1,8 +1,8 @@
 const Data = require('./data');
 
 window.onload = main;
-const vertexShaderFile = 'E:\\GitStone\\WebGL\\Material\\glsl\\vertexShader.glsl';
-const fragmentShaderFile = 'E:\\GitStone\\WebGL\\Material\\glsl\\fragmentShader.glsl';
+const vertexShaderFile = 'E:\\GitStone\\WebGL\\openglProject\\Material\\glsl\\vertexShader.glsl';
+const fragmentShaderFile = 'E:\\GitStone\\WebGL\\openglProject\\Material\\glsl\\fragmentShader.glsl';
 
 let canvas = document.getElementById('webgl');
 function main() {
@@ -131,7 +131,7 @@ function initScene (obj) {
         gl.uniformMatrix4fv(program.u_ModelMatrix, false, modelMatrix.elements);
 
         //console.log(`${red}: ${green}: ${blue}`);
-        gl.uniform3fv(program.u_LightColor, color.elements);
+        // gl.uniform3fv(program.u_LightColor, color.elements);
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
         gl.clear(gl.COLOR_BIT_BUFFER);
