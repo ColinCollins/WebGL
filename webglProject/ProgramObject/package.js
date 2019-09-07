@@ -238,7 +238,7 @@ function loadShader (gl, type, source) {
     let shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    // 解析
+    // 解枝
     let compiled  = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if (!compiled) {
         let msg = gl.getShaderInfoLog(shader);

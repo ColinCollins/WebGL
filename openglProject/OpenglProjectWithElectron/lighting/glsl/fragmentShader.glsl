@@ -14,7 +14,7 @@ struct Light {
     vec3 specular;
 };
 
-uniform Materila u_material;
+uniform Material u_material;
 uniform Light u_light;
 
 uniform vec3 u_ViewPosition;
@@ -24,6 +24,7 @@ varying vec3 v_position;
 
 void main() {
     vec3 ambient = u_light.ambient * u_material.ambient;
+    vec3 vertexPosition = v_position;
     vec3 normal = v_normal;
 
     vec3 lightDir = normalize(u_light.position - vertexPosition);
