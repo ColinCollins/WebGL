@@ -67,3 +67,69 @@ function 本身不表示原型链。
 
 ----------------
 Node 需要自己记录 rotation position tetxture 至少三个属性
+
+### 2019.9.9 进度
+当前需要完成一个资源加载系统的管理，至少需要提供对应的管理 API, 当然，可以资源要求是同步资源。
+
+AssetCtrl.LoadImage Target
+AssetCtrl.LoadNode Target
+AsserCtrl.LoadText Target
+AssetCtrl.LoadGLSL Target -> program
+
+在全部完成之前我们想要做的内容是什么？
+我们首先得想好，有个明确的程序结构，之后才能安排出来一周的工作内容进度。
+
+首先是一个基本的渲染框架，和 RenderWork 有些类似，但是我们希望有的功能包括但不限于：
+
+1. 资源管理系统，界面上希望可以呈现出资源的内容在界面上。
+    - 有什么用？可以用于切换资源吧。但是需要 Node 以及 Inspector 的配合，这个内容比较复杂。切换 shader，texture 之类的。
+
+2. 渲染绘制系统，主界面展示一个 Canvas
+
+3. 右侧边栏有一个 Node 属性展示面板，这就要求 Node 有自己的 select 方法。
+- 渲染界面有一个 Gizmos 可以用于拖动物体，那么应该还要包含旋转。
+- 因为需要的效果是固定的，那么就采用 Component 的形式，将需要的功能封装成 Compoent 需要的 Node 从右侧边栏中自己添加。
+- color 可以替换，program 相关的参数可调整。
+- Sprite 不需要特别单独做一整个系统，但是要求有数据监听，在文件替换的时候能够即时的更新场景物体。
+
+4. 所有的界面之间通过 Listener 进行交流
+5. 左侧是一个界面展示菜单栏，用于更换渲染场景
+    - 因为是我自己用，所以单纯的展示效果就好。不需要节点数。
+
+6. 不需要上方的菜单栏
+
+7. 不需要保存， undo， redo
+
+今天优先处理 lightingMap 渲染，相关的资源暂时使用临时方案代替。
+
+Image 内容需要异步通过 Image 加载。那么需要 renderer 进程和 main 进程进行配合。同时配合一下生产一个 loading 界面，要求优先把所以依赖的 image 图片加载到资源管理内。
+
+这样有一个 loading 进程在场景呈现之前， Ready 是不会准备好的。
+
+main process 的设计应该就是 IO 流，stream 可能会快一点，但是前期我们先不做对应的调整。
+
+重点是设计 renderer process 的框架。
+然后是文件管理，如何分离的问题。
+分为两个大模块和一个小模块。
+Project:
+    - mainProcess
+        - loadCtrl
+        - serialized ? 暂时没必要？
+    - rendererProcess
+        - assetCtrl
+        - MVP
+        - ECS
+        - renderer
+    - windowUtil
+        - drag
+        - MVC
+        - ListenerCtrl （window 间通讯）
+
+mainProcess 与 rendererProcess 相互通信通过 ipc，设计一个总体的管控在 main， 若进程终端，就会断在 main 的 load 流程之间。
+慢慢写，不着急。先把基础的 IO  通信跑通了再说。
+
+#### 2019.9.9 18：00
+处理事项优先级：
+- 规范文件命名
+- 完成 shader 和 image 加载流
+- assetCtrl 管控 project 进程。

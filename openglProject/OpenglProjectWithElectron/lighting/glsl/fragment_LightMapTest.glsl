@@ -18,14 +18,18 @@ uniform Material u_material;
 uniform Light u_light;
 
 uniform vec3 u_ViewPosition;
+uniform sampler2D u_Sampler0;
+uniform sampler2D u_Sampler1;
 
-varying vec3 v_normal;
-varying vec3 v_position;
+varying vec3 v_Normal;
+varying vec3 v_Position;
+varying vec2 v_TexCoord0;
+varying vec2 v_TexCoord1;
 
 void main() {
     vec3 ambient = u_light.ambient * u_material.ambient;
-    vec3 vertexPosition = v_position;
-    vec3 normal = v_normal;
+    vec3 vertexPosition = v_Position;
+    vec3 normal = v_Normal;
 
     vec3 lightDir = normalize(u_light.position - vertexPosition);
     float nDotL = max(dot(normal, lightDir), 0.0);

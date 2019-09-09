@@ -1,12 +1,10 @@
 function Program (gl, VSHADER_SOURCE, FSHADER_SOURCE, ProgramName) {
     this.program = initShader(gl, VSHADER_SOURCE, FSHADER_SOURCE);
     // string, program
-    this.ShaderMap.set(ProgramName, this.program);
+    Program.Map.set(ProgramName, this.program);
 }
 // Generate a map to use.
-let prop = Program.prototype;
-prop.ShaderMap = new Map();
-Program.Map = prop.ShaderMap;
+Program.Map = new Map();
 
 function initShader (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
     let vertexShader = loadShader(gl, gl.VERTEX_SHADER, VSHADER_SOURCE);

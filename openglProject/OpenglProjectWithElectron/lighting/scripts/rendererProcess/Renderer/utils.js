@@ -15,3 +15,14 @@ exports.getUniformProp = function getUniformProp (gl, program, name) {
     }
     return prop;
 }
+
+exports.bindAttribData = function bindAttribData(gl, data, target, format, dataLength) {
+    let buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    // 绑定数据到 buffer
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    // 解析格式
+    gl.vertexAttribPointer(target, dataLength, format, false, 0, 0);
+    // 启用 buffer 数据
+    gl.enableVertexAttribArray(target);
+}

@@ -1,41 +1,57 @@
 // Modules to control application life and create native browser window
 const { app, ipcMain } = require('electron');
-const mainWindow = require('./scripts/Renderer/mainWindow');
+const mainWindow = require('./scripts/rendererProcess/Renderer/mainWindow');
 // nodejs module only could use in the mainjs
 const fs = require('fs');
+
+let AssetCtrl = require('./scripts/mainProcess/AssetsCtrl');
 
 // Quick flush electron, but remember to note this before build package
 require('electron-reload')(__dirname);
 
 app.on('ready', mainWindow.createMainWindow);
 
-ipcMain.on('init-success', (e) => {
-    let vshaderSource = fs.readFileSync(`${__dirname}/glsl/vertexShader.glsl`, { encoding: 'utf8' });
-    let fshaderSource = fs.readFileSync(`${__dirname}/glsl/fragmentShader.glsl`, { encoding: 'utf8' });
+const glslPath = `${__dirname}/glsl/`;
+// sort excute and this process is async
+ipcMain.on('init-start', (e) => {
+    checkForFold(glslPath);
 
-    let lightVertexShaderSource = fs.readFileSync(`${__dirname}/glsl/lightCubeVertexShader.glsl`, { encoding: 'utf8' });
-    let lightFragmentShaderSource = fs.readFileSync(`${__dirname}/glsl/lightCubeFragmentShader.glsl`, { encoding: 'utf8' });
-    // 反向传递
-    e.sender.send('load shader source', {
-        vshaderSource: vshaderSource,
-        fshaderSource: fshaderSource,
-        lightVertexShaderSource: lightVertexShaderSource,
-        lightFragmentShaderSource: lightFragmentShaderSource
+    let vshaderSource = fs.readFileSync(`${glslPath}vertex_LightMapTest.glsl`, { encoding: 'utf8' });
+    let fshaderSource = fs.readFileSync(`${glslPath}fragment_LightMapTest.glsl`, { encoding: 'utf8' });
+
+    let colorCubeVertexShaderSource = fs.readFileSync(`${glslPath}vertex_colorCube.glsl`, { encoding: 'utf8' });
+    let colorCubeFragShaderSource = fs.readFileSync(`${glslPath}fragment_colorCube.glsl`, { encoding: 'utf8' });
+
+    // init image
+    AssetCtrl.preloadImagesPath();
+    e.sender.send('load-relative-images', {
+        imagesPath: AssetCtrl.imagesPath
     });
 
-    console.log('send source to render');
-})
+    // init shader
+    e.sender.send('load-shader-source', {
+        vshaderSource: vshaderSource,
+        fshaderSource: fshaderSource,
+        colorCubeVertexShaderSource: colorCubeVertexShaderSource,
+        colorCubeFragShaderSource: colorCubeFragShaderSource
+    });
+
+});
+// init all sprite success
+ipcMain.on('sprite-init-finished', () => {
+
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit()
     }
-})
+});
 
 app.on('activate', function () {
 
     if (mainWindow === null) {
         mainWindow.createMainWindow()
     }
-})
+});
