@@ -1,6 +1,6 @@
 const ShaderType = {
-    LIGHTING_MAP: 'LightingMap',
-    LIGHTING_CUBE: 'LightingCube'
+    LIGHT_MAP_TEST: 'LightMapTest',
+    COLOR_CUBE: 'colorCube'
 };
 
 Object.freeze(ShaderType);

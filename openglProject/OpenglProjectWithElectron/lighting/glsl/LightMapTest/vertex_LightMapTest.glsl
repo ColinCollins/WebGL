@@ -10,12 +10,11 @@ uniform mat4 u_NormalMatrix;
 varying vec3 v_Normal;
 varying vec3 v_Position;
 varying vec2 v_TexCoord0;
-varying vec2 v_TexCoord1;
 
 void main () {
     gl_Position = u_MvpMatrix * a_Position;
 
     v_Normal = normalize(vec3(u_NormalMatrix * a_Normal));
     v_Position = vec3 (u_ModelMatrix * a_Position);
-    
+    v_TexCoord0 = a_TexCoord0;
 }

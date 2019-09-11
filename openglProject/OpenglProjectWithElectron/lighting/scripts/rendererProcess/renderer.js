@@ -10,7 +10,7 @@ ipcRenderer.on('load-shader-source', (e, sources) => {
     InitGL();
 
     sources.shaderSources.forEach( value => {
-        new Shader(value.name, value.vShaderSource, value.fShaderSource);
+        new Program(value.name, value.vShaderSource, value.fShaderSource);
     });
 
     ipcRenderer.send('shader-init-finished');

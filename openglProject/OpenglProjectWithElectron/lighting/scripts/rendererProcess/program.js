@@ -1,4 +1,4 @@
-function Program (VSHADER_SOURCE, FSHADER_SOURCE, ProgramName) {
+function Program (ProgramName, VSHADER_SOURCE, FSHADER_SOURCE) {
     this.program = initShader(VSHADER_SOURCE, FSHADER_SOURCE);
     // string, program
     Program.ShaderMap.set(ProgramName, this.program);
