@@ -18,7 +18,7 @@ exports.createMainWindow = () => {
 
     console.log(__dirname);
     // and load the index.html of the app.
-    this.mainWindow.loadFile(`${__dirname}/../../index.html`);
+    this.mainWindow.loadFile(`${__dirname}/../../../index.html`);
     // open development tools
     this.mainWindow.webContents.openDevTools();
 

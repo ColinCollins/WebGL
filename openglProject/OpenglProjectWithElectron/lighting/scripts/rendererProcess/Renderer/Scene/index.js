@@ -1,0 +1,1 @@
+window.LightingMapScene = require('./LightingMap');

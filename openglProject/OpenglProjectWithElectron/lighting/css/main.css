@@ -1,5 +1,5 @@
 #webgl {
-    background-color: #5D6D7E;
+    background-color: #1B2631;
     -webkit-user-select: none;
 }
 
@@ -11,8 +11,17 @@
 
 .tips {
     color: red;
+    padding-top: 20px;
 }
 
 .summary {
     margin: 10px;
+    height: 100%;
+    background-color:#F2F3F4;
+    text-align: center;
+}
+
+.menu-label {
+    text-align: center;
+    font-weight: bold;
 }

@@ -1,7 +1,7 @@
 const Program = require('../program');
 
-function Shader (gl, shaderName, vertexShaderSources, fragmentShaderSources) {
-    let program = new Program(gl, vertexShaderSources, fragmentShaderSources);
+function Shader (shaderName, vertexShaderSources, fragmentShaderSources) {
+    let program = new Program(vertexShaderSources, fragmentShaderSources);
     Shader.Map.set(shaderName, program);
 }
 

@@ -1,15 +1,12 @@
 // gl is a global prop
 exports.initScene = function () {
-    new Program(gl, sources.vshaderSource, sources.fshaderSource, ShaderType.LIGHTING_MAP);
-    new Program(gl, sources.lightVertexShaderSource, sources.lightFragmentShaderSource, ShaderType.LIGHTING_CUBE);
-
-    let lightCubeHandle = Program.ShaderMap.get(ShaderType.LIGHTING_CUBE);
+    let colorCubeHandle = Program.ShaderMap.get(ShaderType.LIGHTING_CUBE);
     let lightMapHandle = Program.ShaderMap.get(ShaderType.LIGHTING_MAP);
 
     // lightMapHandl prop init
     initCube1(lightMapHandle);
-    // lightCubeHandle prop init
-    initCube2(lightCubeHandle);
+    // colorCubeHandle prop init
+    initCube2(colorCubeHandle);
 
     // switch program and gl prop init
     gl.useProgram(lightMapHandle);
@@ -65,8 +62,8 @@ exports.initScene = function () {
     // 切换 program 实际上就是在切 shader，而场景中可以有很多个 program 
     gl.useProgram(lightMapHandle);
     drawCube1(gl, lightMapHandle, indices);
-    gl.useProgram(lightCubeHandle);
-    drawCube2(gl, lightCubeHandle, indices);
+    gl.useProgram(colorCubeHandle);
+    drawCube2(gl, colorCubeHandle, indices);
 }
 
 function initCube1 (lightMapHandle) {
@@ -97,11 +94,11 @@ function initCube1 (lightMapHandle) {
     lightMapHandle.u_sampler1 = Utils.getUniformProp(gl, 'u_Sampler1', ligthMapHandle);
 }
 
-function initCube2 (lightCubeHandle) {
-    lightCubeHandle.a_position = Utils.getAttribProp(gl, 'a_Position', lightCubeHandle);
-    lightCubeHandle.a_color = Utils.getAttribProp(gl, 'a_Color', lightCubeHandle);
+function initCube2 (colorCubeHandle) {
+    colorCubeHandle.a_position = Utils.getAttribProp(gl, 'a_Position', colorCubeHandle);
+    colorCubeHandle.a_color = Utils.getAttribProp(gl, 'a_Color', colorCubeHandle);
 
-    lightCubeHanlde.u_mvpMatrix = Utils.getUniformProp(gl, 'u_MvpMatrix', lightCubeHandle);
+    lightCubeHanlde.u_mvpMatrix = Utils.getUniformProp(gl, 'u_MvpMatrix', colorCubeHandle);
 }
 
 // lightMapHandle
@@ -112,7 +109,7 @@ function drawCube1 (gl, program, indices) {
     Utils.bindAttribData(gl, Data.initNormalData(), program.a_normal, gl.FLOAT, 3);
     drawElement(gl, indices);
 }
-// lightCubeHandle
+// colorCubeHandle
 function drawCube2 () {
     Utils.bindAttribData(gl, Data.initVerticesData(), program.a_position, gl.FLOAT, 3);
     Utils.bindAttribData(gl, Data.initColorData(), program.a_position, gl.FLOAT, 3);
@@ -122,7 +119,7 @@ function drawCube2 () {
 function drawElement(gl, indices) {
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
 }
-
+// ------------------------------------ 外移参数
 function initTexture (gl, texCache, image, sampler, samplerCache) {
     let texture = gl.createTexture();
 
@@ -131,7 +128,7 @@ function initTexture (gl, texCache, image, sampler, samplerCache) {
     gl.activeTexture(texCache);
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    // ------------------------------------ 外移参数
+
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP.S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);

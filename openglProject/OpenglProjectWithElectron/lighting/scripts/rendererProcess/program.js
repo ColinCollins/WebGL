@@ -1,19 +1,19 @@
-function Program (gl, VSHADER_SOURCE, FSHADER_SOURCE, ProgramName) {
-    this.program = initShader(gl, VSHADER_SOURCE, FSHADER_SOURCE);
+function Program (VSHADER_SOURCE, FSHADER_SOURCE, ProgramName) {
+    this.program = initShader(VSHADER_SOURCE, FSHADER_SOURCE);
     // string, program
-    Program.Map.set(ProgramName, this.program);
+    Program.ShaderMap.set(ProgramName, this.program);
 }
 // Generate a map to use.
-Program.Map = new Map();
+Program.ShaderMap = new Map();
 
-function initShader (gl, VSHADER_SOURCE, FSHADER_SOURCE) {
-    let vertexShader = loadShader(gl, gl.VERTEX_SHADER, VSHADER_SOURCE);
-    let fragShader = loadShader(gl, gl.FRAGMENT_SHADER, FSHADER_SOURCE);
+function initShader (VSHADER_SOURCE, FSHADER_SOURCE) {
+    let vertexShader = loadShader(gl.VERTEX_SHADER, VSHADER_SOURCE);
+    let fragShader = loadShader(gl.FRAGMENT_SHADER, FSHADER_SOURCE);
 
-    return initProgram(gl, vertexShader, fragShader);
+    return initProgram(vertexShader, fragShader);
 }
 
-function loadShader (gl, type, source) {
+function loadShader (type, source) {
     let shader = gl.createShader(type);
     gl.shaderSource (shader, source);
     gl.compileShader(shader);
@@ -31,7 +31,7 @@ function loadShader (gl, type, source) {
     return shader;
 }
 
-function initProgram (gl, vertexShader, fragShader) {
+function initProgram (vertexShader, fragShader) {
     let program = gl.createProgram();
 
     gl.attachShader(program, vertexShader);
