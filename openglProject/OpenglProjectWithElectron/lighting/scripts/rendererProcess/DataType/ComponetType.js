@@ -1,7 +1,8 @@
 const ComponentType = {
-    DEFAULT: 0,
-    CAMERA: 1,
-    TEXTURE: 2
+    DEFAULT: 'Component',
+    TRANSFORM: 'Transform',
+    CAMERA: 'Camera',
+    TEXTURE: 'Texture'
 };
 
 Object.freeze(ComponentType);

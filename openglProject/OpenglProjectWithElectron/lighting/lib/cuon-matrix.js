@@ -451,7 +451,7 @@ Matrix4.prototype.scale = function(x, y, z) {
  * @param z Z方向の移動量
  * @return this
  */
-Matrix4.prototype.setTranslate = function(x, y, z) {
+Matrix4.prototype.setAnchor = function(x, y, z) {
     var e = this.elements;
     e[0] = 1;  e[4] = 0;  e[8]  = 0;  e[12] = x;
     e[1] = 0;  e[5] = 1;  e[9]  = 0;  e[13] = y;
@@ -467,7 +467,7 @@ Matrix4.prototype.setTranslate = function(x, y, z) {
  * @param z Z方向の移動量
  * @return this
  */
-Matrix4.prototype.translate = function(x, y, z) {
+Matrix4.prototype.anchor = function(x, y, z) {
     var e = this.elements;
     e[12] += e[0] * x + e[4] * y + e[8]  * z;
     e[13] += e[1] * x + e[5] * y + e[9]  * z;
@@ -475,6 +475,21 @@ Matrix4.prototype.translate = function(x, y, z) {
     e[15] += e[3] * x + e[7] * y + e[11] * z;
     return this;
 };
+
+Matrix4.prototype.setTranslate = function (x, y, z) {
+    e[12] = x;
+    e[13] = y;
+    e[14] = z;
+    e[15] = 1;
+}
+
+Matrix4.prototype.translate = function (x, y, z) {
+    e[12] += x;
+    e[13] += y;
+    e[14] += z;
+    e[15] += 0;
+}
+
 // set for the special project
 Matrix4.prototype.setShear = function (angle, x, y) {
     var e = this.elements;

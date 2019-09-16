@@ -7,6 +7,7 @@ class Texture extends component {
     count = 0;
 
     constructor(name, program) {
+        super();
         this.name = name;
         this.program = program;
         this.textures = new Map();
@@ -14,7 +15,7 @@ class Texture extends component {
 
     setTexture (name, rawTexture) {
         if (count + 1 > MAX_TEXTURE_COUNT) return;
-        count++;
+        // count 计数放在 texture 缓存初始化完成时
         this.textures.set(name, rawTexture);
     }
 }

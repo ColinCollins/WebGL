@@ -1,13 +1,15 @@
 import vec3 from "./vec3";
-import vec2 from "./vec2";
+import component from "./component";
 
-class Transform {
+class Transform extends component {
+    static type = ComponentType.TRANSFORM;
     // dirty
     isDirty = false;
     constructor () {
+        super();
         this._position = new vec3();
         this._rotation = new vec3();
-        this._anchor = new vec2(0.5, 0.5);
+        this._anchor = new vec3(0.5, 0.5, 0.5);
         this._size = vec3.one();
         this.isDirty = true;
         // Matrix4
@@ -34,13 +36,13 @@ class Transform {
     }
 
     get anchor () {
-        return vec2.clone(this._anchor);
+        return vec3.clone(this._anchor);
     }
 
     set anchor (value) {
         this.isDirty = true;
-        if (!(value instanceof vec2)) console.warn("Node anchor type error");
-        this._anchor = vec2.clone(value);
+        if (!(value instanceof vec3)) console.warn("Node anchor type error");
+        this._anchor = vec3.clone(value);
     }
 
     get size () {
@@ -53,12 +55,14 @@ class Transform {
         this._size = vec3.clone(value);
     }
 
-    initData () {
+    recalculateData () {
         if (!this.isDirty) return;
-
-        this.modelMatrix = new Martix4().setTranslate(this._position).scale(this._size).rotate(this._rotation.y, 0, 1, 0)
+        this.modelMatrix = new Martix4()
+        .setAnchor(this._anchor.x, this._anchor.y, this._anchor.z)
+        .scale(this._size.x , this._size.y, this._size.z)
+        .rotate(this._rotation.y, 0, 1, 0)
+        .translate(this._position.x, this._position.y, this._position.z);
     }
-
 }
 
 export default Transform;

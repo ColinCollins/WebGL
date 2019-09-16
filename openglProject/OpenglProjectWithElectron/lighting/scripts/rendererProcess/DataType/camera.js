@@ -6,6 +6,7 @@ class Camera extends component {
     canvas = null;
 
     constructor () {
+        super();
         canvas = document.createElement('canvas');
     }
 }

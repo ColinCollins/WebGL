@@ -1,6 +1,8 @@
 class component {
     static type = ComponentType.DEFAULT;
-    constructor() {}
+    constructor() {
+        this.isDestroy = false;
+    }
 
     awake () {}
     start () {}
