@@ -35,7 +35,7 @@ void main() {
     vec3 viewDir = normalize(u_ViewPosition - vertexPosition);
     vec3 lightPos = normalize(u_light.position);
     vec3 halfDir = normalize(lightPos + viewDir);
-    
+
     float spec = pow(max(dot(normal, halfDir), 0.0), u_material.shininess);
     vec3 specular = u_light.specular * spec * vec3(texture2D(u_material.specular, v_TexCoord0));
     vec3 result = ambient + diffuse + specular;

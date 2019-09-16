@@ -188,7 +188,7 @@ function initScene (obj) {
     gl.uniform3fv(program.u_material.specular, new Vector3([0.5, 0.5, 0.5]).elements);
     gl.uniform1f(program.u_material.shininess, 20.0);
     // matrix
-    let mvpMatrix = new Matrix4().setPerspective(50.0, canvas.width / canvas.height, 0.1, 100);
+    let mvpMatrix = new Matrix4().setPerspective(50.0, canvas.width / canvas.height, 1, 100);
     mvpMatrix.lookAt(
         2.0, 5.0, 15.0,
         0.0, 0.0, 0.0,

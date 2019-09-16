@@ -1,5 +1,4 @@
-function Texture(name, path, callback) {
-
+function rawTexture(name, path, callback) {
     let image = new Image();
     image.src = path;
     image.onload = () => {
@@ -12,12 +11,10 @@ function Texture(name, path, callback) {
     this.name = name;
     // path
     this.path = path;
-    Texture.Map.set(name, this);
+    rawTexture.Map.set(name, this);
 }
 
-Texture.Map = new Map();
-
-let prop = Texture.prototype;
+rawTexture.Map = new Map();
 
 
-module.exports = Texture;
+module.exports = rawTexture;

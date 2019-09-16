@@ -1,11 +1,12 @@
 const { ipcRenderer } = require('electron');
 const menu = require('../windowUtil/menu');
+
 main();
 function main() {
     ipcRenderer.send('init-start');
     menu.initMenuButton();
 }
-
+// glsl 加载
 ipcRenderer.on('load-shader-source', (e, sources) => {
     InitGL();
 
@@ -42,13 +43,13 @@ function InitGL() {
     });
 */
 
-
+// image 加载
 ipcRenderer.on('load-images', (e, sources) => {
     let imagesCount = sources.imagesData.length;
     let images = sources.imagesData;
     // 不确定 image 是否会被替代
     for (var i = 0; i < imagesCount; i++) {
-        new Texture(images[i].name, images[i].src, checkForFinished);
+        new rawTexture(images[i].name, images[i].src, checkForFinished);
     }
 });
 

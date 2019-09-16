@@ -90,7 +90,7 @@ AssetCtrl.LoadGLSL Target -> program
 - 渲染界面有一个 Gizmos 可以用于拖动物体，那么应该还要包含旋转。
 - 因为需要的效果是固定的，那么就采用 Component 的形式，将需要的功能封装成 Compoent 需要的 Node 从右侧边栏中自己添加。
 - color 可以替换，program 相关的参数可调整。
-- Texture 不需要特别单独做一整个系统，但是要求有数据监听，在文件替换的时候能够即时的更新场景物体。
+- rawTexture 不需要特别单独做一整个系统，但是要求有数据监听，在文件替换的时候能够即时的更新场景物体。
 
 4. 所有的界面之间通过 Listener 进行交流
 5. 左侧是一个界面展示菜单栏，用于更换渲染场景
@@ -152,3 +152,76 @@ globby 只能走相对路径便利。。。fo 了
 textureObj 采用了异步中的自调用。
 
 __mainProcess 的三种数据形式可以调整成为 继承 的形式。__
+
+#### 2019.9.16
+
+中间休息了三天（看小说去了，诡秘之主写的是真的不错），今天重新开始
+今天开始把几个需要的类型给创建了，因为不清楚实际运用的时候可能会出现的应用，因此我们只写一些比较简单的引用。暂时不用考虑很多，以后用到了再补充。
+今天需要：
+
+vec2, vec3
+
+node：
+    - sprite
+        - path
+        - image
+        - color -> glsl ?
+    - Transform
+        - position
+        - anchor
+        - size
+        - rotation __打算做成四元数来着__
+
+canvas 考虑做离屏或者 label 之后去考虑。
+
+实际上我有点想去看看书，或者代码，比如那个什么光影追踪什么的。Rendering 那部分我都还没开始看。
+先写吧。
+
+屏幕渲染三个大的部分：
+
+1. 数据传入
+2. 离屏渲染
+3. 渲染后处理
+
+一旦开始考虑 scene ，就会涉及到 update 的模式。以及一些框架上的问题。
+关于节点树之类的存储内容，涉及到 js 的内存优化，这个我们放到之后再看： [内存管理](https://blog.sessionstack.com/how-javascript-works-memory-management-how-to-handle-4-common-memory-leaks-3f28b94cfbec)
+
+
+Scene 生命周期：
+awake
+start
+update
+lateUpdate
+
+组件控制
+component 控制新的组件加入一个 node
+component 要有自己的 type
+
+目前打算把 texture 作为 component。
+要根据 glsl 的特性做 shader param 管理，而不是通常性的 scene 管理。
+
+setTexture
+setUniform
+setAttribute
+
+draw -> render => gl.drawElements / gl.draw
+draw call count
+固定数据可以放到 render 统一绑定。
+但是目前没有，我们是分散的来的。
+
+大部分的基础数据可以放到 Transform 这里来处理。
+为了节省计算量，脏模式
+
+__PS:__ presudo node 的作用更多的应该是用在了 light camera 之类的非渲染节点上。
+
+camera 才能够有设置 lookAt 之类的参数，那么就应该做一些调整。
+只有 camera 才需要 perspective 和 view
+
+其他的 node 只需要 modelMatrix。
+还可以考虑 多个 camera 的情况。
+
+scene 需要持有 camera component
+目前先只保留 scene array，不需要多个 scene
+
+越写越庞大，部分的内容我们需要安放到后面去调整，优先把 lightingMap 中的 设置都搬出来。
+今天暂时先不处理 camera， 优先将 lightingMap scene 中的对象转换成 node。

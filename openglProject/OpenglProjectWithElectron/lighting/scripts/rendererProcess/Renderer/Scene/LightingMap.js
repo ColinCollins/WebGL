@@ -93,8 +93,8 @@ function initCube1 (lightMapHandle) {
     Utils.bindAttribData(gl, Data.initTexCoordVertex(), lightMapHandle.a_texCoord0, gl.FLOAT, 2);
     Utils.bindAttribData(gl, Data.initNormalizeData(), lightMapHandle.a_normal, gl.FLOAT, 3);
 
-    initTexture(gl.TEXTURE0, Texture.Map.get("container2").image, lightMapHandle.u_material.diffuse, 0);
-    initTexture(gl.TEXTURE1, Texture.Map.get("container2_specular").image, lightMapHandle.u_material.specular, 1);
+    initTexture(gl.TEXTURE0, rawTexture.Map.get("container2").image, lightMapHandle.u_material.diffuse, 0);
+    initTexture(gl.TEXTURE1, rawTexture.Map.get("container2_specular").image, lightMapHandle.u_material.specular, 1);
 }
 
 function initCube2 (colorCubeHandle) {
