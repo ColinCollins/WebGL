@@ -6,14 +6,15 @@ class Texture extends component {
     static type = ComponentType.TEXTURE;
     count = 0;
 
-    constructor(program) {
-        this.handle = program;
-        this.texture = new Array(MAX_TEXTURE_COUNT);
+    constructor(name, program) {
+        this.name = name;
+        this.program = program;
+        this.textures = new Map();
     }
 
-    setTexture (rawTexture) {
+    setTexture (name, rawTexture) {
+        if (count + 1 > MAX_TEXTURE_COUNT) return;
         count++;
-
+        this.textures.set(name, rawTexture);
     }
-
 }

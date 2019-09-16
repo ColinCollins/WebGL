@@ -225,3 +225,10 @@ scene 需要持有 camera component
 
 越写越庞大，部分的内容我们需要安放到后面去调整，优先把 lightingMap 中的 设置都搬出来。
 今天暂时先不处理 camera， 优先将 lightingMap scene 中的对象转换成 node。
+
+放到 game 进行统一绑定，通常也不会出现特殊的情况。
+texture 里只负责记录对象
+
+目前 Matrix4 的库不支持四元旋转，需要后期调整。
+当前优先仅支持 node y 轴旋转
+__camera 依旧可以使用 lookAt 但是后期支持四元旋转之后，需要将对应部分的代码进行修正。__

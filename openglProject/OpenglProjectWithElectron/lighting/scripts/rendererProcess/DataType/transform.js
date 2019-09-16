@@ -9,6 +9,9 @@ class Transform {
         this._rotation = new vec3();
         this._anchor = new vec2(0.5, 0.5);
         this._size = vec3.one();
+        this.isDirty = true;
+        // Matrix4
+        this.modelMatrix = null;
     }
 
     get position () {
@@ -27,7 +30,7 @@ class Transform {
     set rotation (value) {
         this.isDirty = true;
         if (!(value instanceof vec3)) console.warn("Node rotation type error");
-        this._size = vec3.clone(value);
+        this._rotation = vec3.clone(value);
     }
 
     get anchor () {
@@ -49,6 +52,13 @@ class Transform {
         if (!(value instanceof vec3)) console.warn("Node size type error");
         this._size = vec3.clone(value);
     }
+
+    initData () {
+        if (!this.isDirty) return;
+
+        this.modelMatrix = new Martix4().setTranslate(this._position).scale(this._size).rotate(this._rotation.y, 0, 1, 0)
+    }
+
 }
 
 export default Transform;
