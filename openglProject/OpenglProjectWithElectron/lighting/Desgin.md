@@ -236,4 +236,11 @@ __camera 依旧可以使用 lookAt 但是后期支持四元旋转之后，需要
 
 Unity 将 渲染分为了两个大部分 mesh 和 material 因为它有更加复杂的 material 系统，但是我没有啊。。。暂时简单的写。
 
+awake | start | preUpdate | update | lateUpdate 放入 map 中进行遍历控制。
+
 -----
+
+#### 玩一下 2019.9.17
+pixi-live2D 可以在页面中添加自己的 live2D 模型
+live2D 如何添加 live2D 的模型到 canvas 可以考虑后期加入试试。
+

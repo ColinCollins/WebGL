@@ -3,32 +3,12 @@ exports.initScene = function () {
     let colorCubeHandle = Program.ShaderMap.get(ShaderType.COLOR_CUBE);
     let lightMapHandle = Program.ShaderMap.get(ShaderType.LIGHT_MAP_TEST);
 
-    // lightMapHandl prop init
-    initCube1(lightMapHandle);
-
     // switch program and gl prop init
     gl.enable(gl.DEPTH_TEST);
 
-    // 顶点数据可以都是相同的，只是 shader 不同
-    let indexBuffer = gl.createBuffer();
-    let indices = Data.initIndexData();
+    // lightMapHandl prop init
+    initCube1(lightMapHandle);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-
-    // Camera view position and perspective
-    let aspect = canvas.width / canvas.height;
-    let viewAngle = 50.0;
-    let near = 1;
-    let far =  100;
-
-    let mvpMatrix = new Matrix4().setPerspective(viewAngle, aspect, near, far);
-    // position, dir, axis
-    mvpMatrix.lookAt(
-        0.0, -5.0, 50.0,
-        0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0
-    );
     gl.uniform3fv(lightMapHandle.u_viewPosition, new Vector3([0.0, 5.0, 15.0]).elements);
 
     // lightMapHandle
@@ -53,9 +33,17 @@ exports.initScene = function () {
 
     // colorCubeHandle prop init
     initCube2(colorCubeHandle);
-    let c_modelMatrix = new Matrix4().setTranslate(lightPos.elements[0], lightPos.elements[1], lightPos.elements[2]).scale(0.5, 0.5 , 0.5);
+    let c_modelMatrix = new Matrix4().setTranslate(lightPos.elements[0], lightPos.elements[1], lightPos.elements[2]).scale(0.5, 0.5, 0.5);
     tempMatrix = new Matrix4().set(mvpMatrix).multiply(c_modelMatrix);
     gl.uniformMatrix4fv(colorCubeHandle.u_mvpMatrix, false, tempMatrix.elements);
+
+
+    // 顶点数据可以都是相同的，只是 shader 不同
+    let indexBuffer = gl.createBuffer();
+    let indices = Data.initIndexData();
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
     // 切换 program 实际上就是在切 shader，而场景中可以有很多个 program
     gl.useProgram(lightMapHandle);
@@ -64,13 +52,13 @@ exports.initScene = function () {
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
 }
 
-function initCube1 (lightMapHandle) {
+function initCube1(lightMapHandle) {
     gl.useProgram(lightMapHandle);
     lightMapHandle.a_position = Utils.getAttribProp(gl, lightMapHandle, 'a_Position');
     lightMapHandle.a_normal = Utils.getAttribProp(gl, lightMapHandle, 'a_Normal');
     lightMapHandle.a_texCoord0 = Utils.getAttribProp(gl, lightMapHandle, 'a_TexCoord0');
 
-    lightMapHandle.u_mvpMatrix = Utils.getUniformProp (gl, lightMapHandle, 'u_MvpMatrix');
+    lightMapHandle.u_mvpMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_MvpMatrix');
     lightMapHandle.u_modleMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_ModelMatrix');
     lightMapHandle.u_normalMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_NormalMatrix');
     lightMapHandle.u_light = {
@@ -97,7 +85,7 @@ function initCube1 (lightMapHandle) {
     initTexture(gl.TEXTURE1, rawTexture.Map.get("container2_specular").image, lightMapHandle.u_material.specular, 1);
 }
 
-function initCube2 (colorCubeHandle) {
+function initCube2(colorCubeHandle) {
     gl.useProgram(colorCubeHandle);
     colorCubeHandle.a_position = Utils.getAttribProp(gl, colorCubeHandle, 'a_Position');
     colorCubeHandle.u_mvpMatrix = Utils.getUniformProp(gl, colorCubeHandle, 'u_MvpMatrix');
@@ -108,7 +96,7 @@ function initCube2 (colorCubeHandle) {
 }
 
 // ------------------------------------ 外移参数
-function initTexture (texCache, image, sampler, samplerCache) {
+function initTexture(texCache, image, sampler, samplerCache) {
     if (!texCache || !image || !sampler || !samplerCache) console.error('initTexture lost param');
 
     let texture = gl.createTexture();

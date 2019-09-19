@@ -5,13 +5,9 @@ window.ComponentType = require('./DataType/ComponetType');
 window.Data = require('./Renderer/data');
 // class
 window.Program = require('./program');
-window.Utils = require('./Renderer/utils');
+window.glMethod = require('./Renderer/glMethod');
 window.RawTexture = require('./Assets/rawTexture');
 
-window.Class = require('../windowUtil/index');
-
-window.vec2 = require('./DataType/vec2');
-window.vec3 = require('./DataType/vec3');
-
+window.ClassUtil = require('../windowUtil/index');
 
 require('./Renderer/Scene/index')

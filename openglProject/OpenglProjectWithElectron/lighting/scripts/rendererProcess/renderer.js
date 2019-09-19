@@ -62,7 +62,6 @@ function checkForFinished (curCount, maxCount) {
     return;
 }
 
-
 ipcRenderer.on('init-success', (e) => {
     $('.tips').css('color', 'green').text("Ready");
 });

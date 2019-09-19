@@ -62,7 +62,7 @@ Matrix4.prototype.set = function(src) {
 };
 
 /**
- * 渡された行列を右からかける。
+ * 左乘矩阵 other
  * @param other かける行列
  * @return this
  */
@@ -612,6 +612,8 @@ Matrix4.prototype.rotate = function(angle, x, y, z) {
  * @param centerX, centerY, centerZ 標点の位置
  * @param upX, upY, upZ カメラの上方向を表す方向ベクトル
  * @return this
+ * 参考
+ * https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-3d-camera.html
  */
 Matrix4.prototype.setLookAt = function(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ) {
     var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
@@ -626,7 +628,7 @@ Matrix4.prototype.setLookAt = function(eyeX, eyeY, eyeZ, centerX, centerY, cente
     fy *= rlf;
     fz *= rlf;
 
-    // fとupの外積を求める
+    // fとupの外積を求める 这是为了获取 x 轴方向
     sx = fy * upZ - fz * upY;
     sy = fz * upX - fx * upZ;
     sz = fx * upY - fy * upX;
@@ -637,7 +639,7 @@ Matrix4.prototype.setLookAt = function(eyeX, eyeY, eyeZ, centerX, centerY, cente
     sy *= rls;
     sz *= rls;
 
-    // sとfの外積を求める
+    // sとfの外積を求める 获取相机 Y 轴方向
     ux = sy * fz - sz * fy;
     uy = sz * fx - sx * fz;
     uz = sx * fy - sy * fx;

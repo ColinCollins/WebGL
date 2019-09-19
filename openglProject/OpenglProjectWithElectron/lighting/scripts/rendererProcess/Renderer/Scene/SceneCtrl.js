@@ -1,16 +1,27 @@
-const MAX_SCENE_COUNT = 1024;
-// queue
 class SceneCtrl {
-    static sceneQueue = new Array(MAX_SCENE_COUNT);
+    static sceneMap = new Map();
     static count = 0;
 
     static pushScene (scene) {
-        if (count + 1 > MAX_SCENE_COUNT) return;
-        this.sceneQueue.push(scene);
+        this.sceneMap.set(scene.name, scene);
     }
 
-    static popScene () {
-        this.sceneQueue.length--;
+    static getScene (sceneName) {
+        if (this.isContainScene(sceneName))
+           return this.sceneMap.get(sceneName);
+    }
+
+    static removeScene (sceneName) {
+        if (this.isContainScene(sceneName))
+            this.sceneMap.delete(sceneName);
+    }
+
+    static isContainScene () {
+        if (!this.sceneMap.has(sceneName)) {
+            console.warn(`Doesn't find specified scene in map`);
+            return false;
+        }
+        return true;
     }
 }
 
