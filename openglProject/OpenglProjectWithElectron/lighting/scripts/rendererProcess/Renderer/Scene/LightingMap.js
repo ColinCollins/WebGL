@@ -8,7 +8,7 @@ exports.initScene = function () {
 
     // lightMapHandl prop init
     initCube1(lightMapHandle);
-
+    // node position
     gl.uniform3fv(lightMapHandle.u_viewPosition, new Vector3([0.0, 5.0, 15.0]).elements);
 
     // lightMapHandle
@@ -52,67 +52,4 @@ exports.initScene = function () {
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
 }
 
-function initCube1(lightMapHandle) {
-    gl.useProgram(lightMapHandle);
-    lightMapHandle.a_position = Utils.getAttribProp(gl, lightMapHandle, 'a_Position');
-    lightMapHandle.a_normal = Utils.getAttribProp(gl, lightMapHandle, 'a_Normal');
-    lightMapHandle.a_texCoord0 = Utils.getAttribProp(gl, lightMapHandle, 'a_TexCoord0');
-
-    lightMapHandle.u_mvpMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_MvpMatrix');
-    lightMapHandle.u_modleMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_ModelMatrix');
-    lightMapHandle.u_normalMatrix = Utils.getUniformProp(gl, lightMapHandle, 'u_NormalMatrix');
-    lightMapHandle.u_light = {
-        position: Utils.getUniformProp(gl, lightMapHandle, "u_light.position"),
-        ambient: Utils.getUniformProp(gl, lightMapHandle, 'u_light.ambient'),
-        diffuse: Utils.getUniformProp(gl, lightMapHandle, 'u_light.diffuse'),
-        specular: Utils.getUniformProp(gl, lightMapHandle, 'u_light.specular')
-    };
-
-    lightMapHandle.u_material = {
-        ambient: Utils.getUniformProp(gl, lightMapHandle, 'u_material.ambient'),
-        diffuse: Utils.getUniformProp(gl, lightMapHandle, 'u_material.diffuse'),
-        specular: Utils.getUniformProp(gl, lightMapHandle, 'u_material.specular'),
-        shininess: Utils.getUniformProp(gl, lightMapHandle, 'u_material.shininess')
-    };
-
-    lightMapHandle.u_viewPosition = Utils.getUniformProp(gl, lightMapHandle, 'u_ViewPosition');
-
-    Utils.bindAttribData(gl, Data.initVerticesData(), lightMapHandle.a_position, gl.FLOAT, 3);
-    Utils.bindAttribData(gl, Data.initTexCoordVertex(), lightMapHandle.a_texCoord0, gl.FLOAT, 2);
-    Utils.bindAttribData(gl, Data.initNormalizeData(), lightMapHandle.a_normal, gl.FLOAT, 3);
-
-    initTexture(gl.TEXTURE0, rawTexture.Map.get("container2").image, lightMapHandle.u_material.diffuse, 0);
-    initTexture(gl.TEXTURE1, rawTexture.Map.get("container2_specular").image, lightMapHandle.u_material.specular, 1);
-}
-
-function initCube2(colorCubeHandle) {
-    gl.useProgram(colorCubeHandle);
-    colorCubeHandle.a_position = Utils.getAttribProp(gl, colorCubeHandle, 'a_Position');
-    colorCubeHandle.u_mvpMatrix = Utils.getUniformProp(gl, colorCubeHandle, 'u_MvpMatrix');
-    colorCubeHandle.u_color = Utils.getUniformProp(gl, colorCubeHandle, 'u_Color');
-
-    Utils.bindAttribData(gl, Data.initVerticesData(), colorCubeHandle.a_position, gl.FLOAT, 3);
-    gl.uniform3fv(colorCubeHandle.u_color, new Vector3([1.0, 1.0, 1.0]).elements);
-}
-
-// ------------------------------------ 外移参数
-function initTexture(texCache, image, sampler, samplerCache) {
-    if (!texCache || !image || !sampler || !samplerCache) console.error('initTexture lost param');
-
-    let texture = gl.createTexture();
-
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-
-    gl.activeTexture(texCache);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    // image 数据读取方式
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-    gl.uniform1i(sampler, samplerCache);
-}
 

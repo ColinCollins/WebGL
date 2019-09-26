@@ -244,3 +244,11 @@ awake | start | preUpdate | update | lateUpdate 放入 map 中进行遍历控制
 pixi-live2D 可以在页面中添加自己的 live2D 模型
 live2D 如何添加 live2D 的模型到 canvas 可以考虑后期加入试试。
 
+#### 2019.9.19
+应该将 program 提取出来，按照 Unity 的那一套做一个简单的外扩。
+因为 program 没办法统一，不如拆出来。
+新增 programObj 大类，根据不同的需求进行整合。
+
+
+#### 2019.9.26
+我们应该做的事 ProgramObj 的语法解析器。
